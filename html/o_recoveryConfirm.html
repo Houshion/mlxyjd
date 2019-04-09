@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>确认收房信息</title>
+    <style>
+        .btnConfirm {
+            border-bottom-right-radius: 10px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="confirm">
+        <div class="box1 bfff flex pd-10 mg-b-10">
+            <div class="ta-left wd-50 flex lh32">
+                <div class="icon bred">!</div>
+                <div>未收房</div>
+            </div>
+        </div>
+        <div class="box2 bfff pd-l-10 mg-b-10">
+            <div class="list flex flexBetween border-b">
+                <div>房间类型</div>
+                <div class="c999 roomType"></div>
+            </div>
+            <div class="list flex flexBetween border-b">
+                <div>房间号码</div>
+                <div class="c999 roomNum"></div>
+            </div>
+            <div class="list flex flexBetween border-b">
+                <div>所属楼层</div>
+                <div class="c999 roomFloor"></div>
+            </div>
+            <div class="list flex flexBetween border-b">
+                <div>客户名称</div>
+                <div class="c999 Name"></div>
+            </div>
+        </div>
+        <div class="box3 bfff check pd-10 mg-b-10">
+            <div class="title">
+                <img src="../img/o_wares.png" alt=""> 确认房内消耗品使用情况
+            </div>
+        </div>
+        <div class="box4 bfff pd-10 mg-b-10">
+            <div class="mgtb-10">其他说明</div>
+            <textarea cols="30" rows="5" placeholder="请输入" class="wd-90"></textarea>
+        </div>
+        <div class="box5 bfff ta-center">
+            <div class="btn1 pd-t-15 pd-b-15 confirmBtn">确认收房</div>
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="mask hide"></div>
+    <!-- 隐藏框 -->
+    <div class="wd-60 bfff hide maskBox radius10" id="confirms">
+        <div class="pd-15">
+            <div class="ta-center message">
+                <img src="../img/o_confirm.png" class="wd-40 mg-10">
+                <div>是否确认收房？</div>
+            </div>
+        </div>
+        <div class="border-t flex">
+            <div class="box wd-50 pd-15 border-r colbbb" onclick="hideModal($('#confirms'))">取消</div>
+            <div class="box wd-50 pd-15 btn1 btnConfirm">确认</div>
+        </div>
+    </div>
+</body>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/o_base.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    $(function () {
+
+        var resData = JSON.parse(getData("recoveryData"));
+        var str = '';
+
+        $(".roomType").text(resData.HOTELROOMTYPE_NAME);
+        $(".roomNum").text(resData.ROOM_NAME);
+        $(".roomFloor").text(resData.FLOOR_NAME);
+        $(".Name").text(resData.USERNAME);
+
+        ajaxPost({
+            ROOM_ID: resData.ROOM_ID
+        }, "appHostel/queryConsumables", function (res) {
+            var list = res.consumablesList.listData;
+            for (var i = 0; i < list.length; i++) {
+                str +=
+                    '<div class="waresList flex mg-t-10">' +
+                    '<div class="wd-10 ischeck" data-id="' + list[i].ROOM_CONSUMER_ID +
+                    '" data-price="' + list[i].CONSUMER_PRICE + '">' +
+                    '<img src="../img/o_uncheck.png" class="wd-60" data-src="../img/o_check.png">' +
+                    '</div>' +
+                    '<div class="wd-40">' + list[i].CONSUMER_NAME + '</div>' +
+                    '<div class="wd-50 ta-right flex border radius10">' +
+                    '<div class="wd-30 border-r box font18 reducebtn">-</div>' +
+                    '<div class="wd-40 waresInput">' +
+                    '<input type="number" readonly class="input" value="0" />' +
+                    '</div>' +
+                    '<div class="wd-30 border-l box font18 plusbtn">+</div>' +
+                    '</div>' +
+                    '</div>'
+            }
+            $(".box3").append(str);
+
+        });
+
+        // 点击选中
+        $(".box3").on("click", ".ischeck", function () {
+            var _this = $(this).children();
+            var attrSrc = _this.attr("src");
+            var dataSrc = _this.data("src");
+
+            if (_this.hasClass("checked")) {
+                _this.removeClass("checked")
+            } else {
+                _this.addClass("checked")
+            }
+            _this.attr("src", dataSrc).data("src", attrSrc);
+        });
+
+        /** 清点房内消耗品使用情况 **/
+        // 数量加
+        $(".box3").on("click", ".plusbtn", function () {
+            var number = $(this).siblings(".waresInput").children();
+            number.val(parseInt(number.val()) + 1);
+        });
+        //数量减，为零时停止
+        $(".box3").on("click", ".reducebtn", function () {
+            var number = $(this).siblings(".waresInput").children();
+            var val = parseInt(number.val());
+            if (val > 0) {
+                number.val(val - 1);
+            }
+        });
+
+        // 弹出确认隐藏框
+        $(".confirmBtn").on("click", function () {
+            showModal($('#confirms'));
+        });
+
+        $("#confirms").on("click", ".btnConfirm", function () {
+            var goods = [],
+                off = true;
+            $(".checked").each(function () {
+                var num = $(this).parents(".waresList ").find("input").val();
+                if (num <= 0) {
+                    dlctipbox.show('数量不能为0');
+                    off = false;
+                    hideModal($('#confirm'));
+                } else {
+                    goods.push({
+                        consumableId: $(this).parent().data("id"),
+                        consumableCount: num,
+                        consumablePrice: $(this).parent().data("price"),
+                    });
+                }
+
+            });
+            var consumables = JSON.stringify(goods)
+            if (goods.length == 0) consumables = '';
+            // console.log(consumables)
+            if (off) {
+                hideModal($('#confirms'));
+                loadingShow();
+                ajaxPost({
+                    consumables: consumables,
+                    orderId: resData.ORDERID,
+                    userId: user_token().USER_ID,
+                    content: $("textarea").val()
+                }, "appHostel/addOrderDetails", function (res) {
+                    loadingHide()
+                    if (res.code == 1) {
+                        dlctipbox.show(res.msg);
+                        setTimeout(() => {
+                            location.href = "o_recovery.html"
+                        }, 1500);
+                    }
+                });
+            }
+
+        });
+    });
+</script>
+
+</html>

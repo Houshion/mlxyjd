@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>自助酒店</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/swiper.min.css" />
+    <link rel="stylesheet" href="../css/dropload.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script type="text/javascript" src="../js/swiper.min.js"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+        window['adaptive'].baseFont = 28;
+        window['adaptive'].init();
+    </script>
+    <style type="text/css">
+        .t {
+            padding: .2rem;
+        }
+
+        .p20 {
+            padding: .2rem;
+        }
+
+        .f28 {
+            font-size: .28rem;
+        }
+
+        .c {
+            padding: .1rem;
+            color: #5ab3ff;
+            border: 1px solid #5ab3ff;
+            border-radius: 5px;
+            font-size: 0.18rem;
+            margin-right: 0.2rem;
+        }
+
+        .c_btn {
+            color: #fff;
+            font-size: .18px;
+            border-radius: 5px;
+            /* padding: .1rem .2rem; */
+            /* background: linear-gradient(to right, #6c8eda, #4bc0ed); */
+            background: url(../img/ybtn.png) no-repeat;
+            background-size: 100%;
+            width: 75px;
+            height: 25px;
+        }
+
+        #go-approve {
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        }
+    </style>
+
+<body>
+    <div class="bigBox">
+        <ul class="container">
+            <div class="swiper-container">
+                <div class="swiper-wrapper" style="height:3.5rem;">
+                    <!-- <div class="swiper-slide"><img src="../img/banner.png"></div> -->
+                    <!--             <div class="swiper-slide"><img src="../img/banner.png"></div>
+                        <div class="swiper-slide"><img src="../img/banner.png"></div> -->
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+            <a class="bw t flex_a mb20">
+                <img class="HOTEL_IMAGES" src="../img/hotelicon.png" style="width: .3rem;height: .3rem" />
+                <ul class="ml20">
+                    <p class="h_title">
+                        <!-- 广州圣丰索菲特大酒店 -->
+                    </p>
+                    <p class="col9 f24 address">
+                        <!-- 广东省广州市天河区广州大道中988号 -->
+                    </p>
+                </ul>
+            </a>
+            <div class="ListBox">
+                <ul class="main_list">
+                    <!-- <div class="list flex_a bdb bw p20">
+    <img src="../img/y_1.png" style="width:1.7rem;" />
+    <ul class="ml20 w100">
+        <p class="f28">个人豪华套房</p>
+        <p class="f28 color1 mt20">￥150.00</p>
+        <div class="flex-sb mt20">
+            <ul>
+                <span class="c">房间38㎡ </span>
+                <span class="c">楼层:17-30</span>
+            </ul>
+            <span class="c_btn flex"><img class="mr10" src="../img/y_2.png" style="width:.2rem;height:0.22rem"/>预约</span>
+        </div>
+    </ul>
+</div> -->
+                </ul>
+            </div>
+        </ul>
+    </div>
+    <!-- 弹出层 -->
+    <div class="mask">
+        <div class="redire-checkbox">
+            <div class="redire-checkbox-icon"></div>
+            <span class="redire-checkbox-span">只有实名认证后才能预约哦!</span>
+            <div class="redire-checkbox-zu">
+                <div class="redire-box-return" id="close-approve">
+                    <span class="redire-box-return-span" style="color: #333333;">取消</span>
+                </div>
+                <a class="redire-box-return redire-btn-bgimg" id="go-approve" href="y_certification.html">
+                    <span class="redire-box-return-span" style="color: #FFF;">去认证</span>
+                </a>
+            </div>
+        </div>
+</body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script src="../js/dropload.min.js"></script>
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp"></script>
+<script type="text/javascript" src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+<script>
+    var state = 0;
+    if (user_token() == null) {
+        location.href = 'y_login.html?type=1'
+    } else {
+        dlc_request('appHostel/hotelInfo', {
+            pageSize: 10,
+            currentPage: 1,
+            userId: user_token().USER_ID
+        }, function (res) {
+            console.log(res);
+            if (res.code == 1) {
+                state = res.renZheng;
+                $('.h_title').text(res.hotelInfo.HOTEL_Name);
+                $('.address').text(res.hotelInfo.HOTEL_ADDRESS);
+                console.log(res.hotelInfo.HOTEL_IMAGES.split(',').length)
+                var banner_length = res.hotelInfo.HOTEL_IMAGES.split(',').length;
+                for (var i = 0; i < banner_length; i++) {
+                    $('.swiper-wrapper').append(' <div class="swiper-slide"><img src="' +
+                        res.hotelInfo.HOTEL_IMAGES.split(',')[i] + '" style="width:100%"></div>')
+                    console.log(res.hotelInfo.HOTEL_IMAGES.split(',')[i]);
+                }
+                // 轮播图
+                var swiper = new Swiper('.swiper-container', {
+                    autoplay: true,
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                    },
+                });
+            } else {
+                dlctipbox.show(res.msg);
+            }
+        })
+        orderList();
+
+    }
+
+    function orderList() {
+        var page = 0,
+            size = 10;
+        $('.ListBox').dropload({
+            scrollArea: window,
+            loadDownFn: function (me) {
+                $('.dropload-down').remove();
+                page++;
+                var str = '';
+                $.ajax({
+                    type: 'get',
+                    url: dlcUrl() + "appHostel/hotelInfo",
+                    data: {
+                        currentPage: page,
+                        pageSize: size,
+                        userId: user_token().USER_ID
+                    },
+                    async: false,
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code == 1) {
+                            var a = res.roomTypeInfo.listData;
+                            if (page == 1 && a.length < 1) {
+                                str = '暂无数据';
+                            }
+                            if (a.length > 0) {
+                                for (i in a) {
+                                    var roomId = a[i].HOTELROOMTYPE_ID;
+                                    str += '<div class="list flex_a bdb bw p20" data-roomid=' +
+                                        a[i]
+                                        .HOTELROOMTYPE_ID + ' >' +
+                                        '<img src="' + a[i].HOTELROOMTYPE_IMAGE.split(',')[0] +
+                                        '" style="width:1.7rem;" />' +
+                                        '<ul class="ml20 w100">' +
+                                        ' <p class="f28 typeName">' + a[i].HOTELROOMTYPE_NAME +
+                                        '</p>' +
+                                        '<div class="flex-sb mt20">' +
+                                        '<ul>' +
+                                        '<span class="c">房间' + a[i].HOTELROOMTYPE_REMARK +
+                                        '</span>' +
+                                        '<span class="c">楼层:' + a[i].FLOOR_NAME + '</span>' +
+                                        '</ul>' +
+                                        // '<span class="c_btn flex"><img class="mr10" src="../img/y_2.png" style="width:.2rem;height:0.22rem"/>预约</span>' +
+                                        '<span class="c_btn flex"></span>' +
+                                        '</div>' +
+                                        '</ul>' +
+                                        '</div>'
+                                }
+                                setTimeout(function () {
+                                    $('.main_list').append(str);
+                                }, 1000);
+                            } else {
+                                me.lock();
+                                me.noData();
+                                console.log(res.msg);
+                            }
+                            me.resetload(); // 每次数据插入，必须重置
+                        }
+                    },
+                    error: function (err) {
+                        me.lock();
+                        me.noData();
+                        me.resetload();
+                        console.log(JSON.stringify(err));
+                    }
+                })
+            }
+        })
+    }
+    $('.main_list').on('click', '.c_btn', function () {
+        console.log(state);
+        roomId = $(this).parents('.list').data('roomid');
+        name = $('.h_title').text();
+        address = $('.address').text();
+        typeName = $(this).parents(".list").find(".typeName").text()
+        if (state) {
+            location.href = 'y_yuding.html?roomId=' + roomId + "&name=" + encodeURI(encodeURI(name)) +
+                "&address=" + encodeURI(encodeURI(address)) + "&type=" + encodeURI(encodeURI(typeName));
+        } else {
+            $('.mask').css('display', 'flex');
+        }
+    })
+    // // 去认证
+    // function certification() {
+    //     $('.mask').css('display', 'flex');
+    // }
+    // // 去预定
+    // function booking(_res) {
+    //     location.href = 'y_yuding.html?roomId=' + _res;
+    // }
+    $('.mask').on('click', function () {
+        $(this).hide();
+    })
+</script>

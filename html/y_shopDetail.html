@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>商品详情</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+        window['adaptive'].baseFont = 28;
+        window['adaptive'].init();
+    </script>
+    <style type="text/css">
+        .line {
+            width: .4rem;
+            height: .02rem;
+            background: #e8e8e8;
+        }
+
+        .add_btn {
+            color: #fff;
+            padding: .1rem .2rem;
+            border-radius: .1rem;
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        }
+
+        .detail>img {
+            max-width: 100%;
+            margin-top: .2rem;
+        }
+
+        .detail>p {
+            line-height: .6rem;
+            color: #666;
+            margin-top: .2rem;
+            padding: 0 .2rem;
+        }
+    </style>
+
+    <body>
+        <div class="bw">
+            <img class="GOODS_IMAGE" src="" style="width: 100%;" />
+            <!-- <img class="GOODS_IMAGE" src="../img/y_3.png" style="width: 100%;" /> -->
+            <p class="mt10 plr20 GOODS_NAME">
+                <!-- 可乐鸡翅 -->
+            </p>
+            <p class="flex-sb w100 plr20 mtb20">
+                <span class="color1 font16 GOODS_PRICE">
+                    <!-- ￥80.00 -->
+                </span>
+                <span class="f12 col9 number">
+                    <!-- 月售：362 -->
+                </span>
+                <span class="add_btn">加入购物车</span>
+            </p>
+        </div>
+        <!-- 商品详情 -->
+        <div class="mt20 bw detail">
+            <p class="flex">
+                <b class="line col9"></b>
+                <span class="col9 plr20">商品详情</span>
+                <b class="line col9"></b>
+            </p>
+            <!--   <img src="../img/y_3.png" style="width:100%;" /> -->
+            <p class="GOODS_SPECIF">
+
+            </p>
+        </div>
+    </body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    var goodsId;
+    dlc_request('appHotelShop/goodsInfo', {
+        goodsId: getParam().id
+    }, function (res) {
+        console.log(res.goodsInfo);
+        if (res.code == 1) {
+            goodsId = res.goodsInfo.GOODS_ID;
+            $('.GOODS_NAME').text(res.goodsInfo.GOODS_NAME);
+            $('.GOODS_PRICE').text('￥' + res.goodsInfo.GOODS_PRICE);
+            $('.number').text('月售：' + res.goodsInfo.number);
+            $('.GOODS_SPECIF').html(res.goodsInfo.GOODS_SPECIF);
+            $('.GOODS_IMAGE').attr('src', res.goodsInfo.GOODS_IMAGE[0].substr(0, 5) != 'http' ?
+                'https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/' + res.goodsInfo.GOODS_IMAGE
+                .split(',')[0] : res.goodsInfo.GOODS_IMAGE.split(',')[0]);
+        } else {
+            dlctipbox.show(res.msg);
+        }
+    })
+
+    $('.add_btn').on('click', function () {
+        var total = getData("total");
+        for (var i = 0; i < total.length; i++) {
+            for (var j = 0; j < total[i].goods.length; j++) {
+                if (total[i].goods[j].GOODS_ID == goodsId) {
+                    total[i].goods[j].num++;
+                }
+            }
+        }
+        setData("total", total)
+        dlctipbox.show("成功加入购物车，正在返回上一页...");
+        setTimeout(() => {
+            history.go(-1)
+        }, 1500);
+    })
+</script>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>购物车</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+    window['adaptive'].desinWidth = 750;
+    window['adaptive'].baseFont = 28;
+    window['adaptive'].init();
+    </script>
+    <style type="text/css">
+    .searchBox {
+        height: 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    #search {
+        width: 80%;
+        padding-left: .5rem;
+        background: url(../img/search.png) no-repeat;
+        -webkit-background-size: .28rem .28rem;
+        background-size: .28rem .28rem;
+    }
+
+
+    .lBox {
+        width: 2rem;
+        height: 11rem;
+        position: fixed;
+        border-right: 1px solid #e8e8e8;
+    }
+
+    .rBox {
+        margin-left: 2rem;
+    }
+
+    .lBox li {
+        height: 1rem;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    .lBox li.active {
+        color: #fff;
+        background: linear-gradient(to right, #6c8eda, #4bc0ed);
+    }
+
+    .bottom {
+        height: 1rem;
+        border-top: 1px solid #e8e8e8;
+    }
+
+    .c_box {
+        justify-content: flex-end;
+        margin: -70px 10px 0 70%
+    }
+
+    .wh {
+        width: 0.68rem;
+        height: 0.68rem;
+        display: flex;
+        color: #666;
+        font-size: .32rem;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #e5e5e5;
+    }
+
+    .minus {
+        border-right: none;
+        border-radius: 6px 0 0 6px;
+    }
+
+    .add {
+        border-left: none;
+        border-radius: 0 6px 6px 0;
+    }
+
+    b {
+        font-weight: normal;
+    }
+
+    #pay {
+        width: 2rem;
+        height: 1rem;
+        background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        color: #fff;
+    }
+
+    .tip {
+        position: absolute;
+        width: 0.3rem;
+        height: 0.31rem;
+        background: #ff6a6a;
+        color: #fff;
+        font-size: 0.24rem;
+        top: -0.1rem;
+        left: 100%;
+        border-radius: 1rem;
+    }
+
+    .btn {
+        width: 1.6rem;
+        height: 100%;
+        color: #fff;
+    }
+
+    .del_btn {
+
+        background: linear-gradient(to right, #0fa3a5, #3ec2c9);
+    }
+    /*选择*/
+
+    input[name=cart]:checked+span {
+        background: url(../img/o_check.png) no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .c {
+        width: .4rem;
+        height: .4rem;
+        border-radius: 50%;
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        display: block;
+        margin-right: .2rem;
+    }
+    .lists {
+        margin-bottom: 34px;
+    }
+    </style>
+
+    <body>
+        <div class="bigBox">
+            <ul class="container">
+                <!-- <label class="list flex_a bw p20 bdb">
+                    <div>
+                        <input type="checkbox" name="cart" hidden="" />
+                        <span class="c"></span>
+                    </div>
+                    <img class="img" src="../img/goods.png" style="width:1.7rem;height:1.5rem;" />
+                    <ul class="ml20">
+                        <a href="y_shopDetail.html">可乐鸡翅</a>
+                        <p class="color1 mt10 font16">￥<span class="price">80</span>.00</p>
+                        <div class="flex c_box">
+                            <label class="wh minus">
+                                <button class="font18 col6">&minus;</button>
+                            </label>
+                            <input class="font18 wh tac num" type="number" name="" value="0" />
+                            <label class="wh add">
+                                <button class="font18 col6">+</button>
+                            </label>
+                        </div>
+                    </ul>
+                </label> -->
+        </div>
+        </ul>
+        <div class="bw flex bottom">
+            <div class="flex1 flex-sb plr24">
+                <p class="ml40">已选(
+                    <span class="count">0</span> )
+                    <span class="color1 ml20 t_price"></span>
+                </p>
+            </div>
+            <div class="flex" style="height:100%;">
+                <span class="del_btn flex btn" onclick="delGoodItem()">删除</span>
+                <span class="pay_btn flex bgc1 btn">确认</span>
+            </div>
+        </div>
+    </body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+// 地址获取
+var arr = getData('total');
+var str = '';
+var arr1 = [];
+var obj = {};
+init();
+
+function init() {
+    str = '';
+    for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr[i].goods.length; j++) {
+            var a = arr[i].goods[j]
+            if (a.num > 0) {
+                str += '<div class="lists"><label class="list flex_a bw p20 bdb" data-gnum='+a.GOODS_NUMBER+' data-id="' + a.GOODS_ID + '" data-name="' + a.GOODS_NAME + '" data-freight=' + a.GOODS_FREIGHT +
+                    '  data-price=' + a.GOODS_PRICE + '  data-img=' + a.GOODS_IMAGE + '>' +
+                    '<div>' +
+                    '<input type="checkbox" name="cart" class="cart" data-id="' + a.GOODS_ID + '" hidden="" />' +
+                    '<span class="c"></span>' +
+                    '</div>' +
+                    ' <img class="img Gimg" src="' + a.GOODS_IMAGE + '" style="width:1.7rem;height:1.5rem;" />' +
+                    '<ul class="ml20">' +
+                    '<a href="y_shopDetail.html?id=' + a.GOODS_ID + '" class="Gname">' + a.GOODS_NAME + '</a>' +
+                    '<p class="color1 mt10 font16">￥<span class="price">' + Number(a.GOODS_PRICE).toFixed(2) + '</span></p>' +
+                    '</ul>' +
+                    '</label>'+
+                    '<div class="flex c_box">' +
+                    '<div class="wh minus" data-index="0" data-i="' + i + '" data-ii="' + j + '">' +
+                    '<button class="font18 col6">&minus;</button>' +
+                    '</div>' +
+                    '<input readonly class="font18 wh tac num" type="number" name="" value="' + a.num + '" />' +
+                    '<div class="wh add" data-index="1" data-i="' + i + '" data-ii="' + j + '">' +
+                    '<button class="font18 col6">+</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+            }
+        }
+    }
+    $('.container').html(str);
+}
+// 选中几个
+$('.list').on('click', function() {
+    $('.count').text($('input[name=cart]:checked').length);
+    totals();
+})
+
+var i, ii;
+
+//添加购物车
+$('.lists').on('click', '.add', function() {
+    changeArr(this);
+})
+//减少购物车
+$('.lists').on('click', '.minus', function() {
+    changeArr(this);
+})
+
+function changeArr(_this) {
+    var numbers,
+        gnumber = $(_this).parents(".lists").find('.list').data("gnum");
+    if ($(_this).data('index') == 0) { //减
+        numbers = parseInt($(_this).parents(".lists").find('.num').val()) - 1;
+    } else if ($(_this).data('index') == 1) { //加
+        numbers = parseInt($(_this).parents(".lists").find('.num').val()) + 1;
+    } else if ($(_this).data('index') == 3) { //删除
+        numbers = 0;
+    }
+    if(gnumber >= numbers){
+        var goods_id = $(_this).parents('li').data('goods_id');
+        i = $(_this).data("i");
+        ii = $(_this).data("ii");
+        arr[i].goods[ii].num = numbers;
+        if (numbers >= 0) {
+            $(_this).parents('.lists').find('.num').val(numbers);
+        }
+        setData("total", arr);
+    }else{
+        dlctipbox.show('库存不足')
+    }
+    totals()
+}
+
+
+var delGoodId = []
+console.log(arr)
+
+function delGoodItem() { // 删除
+    $('.cart:checked').each(function(i) {
+        var that = this
+        delGoodId.push($(that).data('id'))
+    })
+    delGoodId.forEach(function(p1, p2) {
+        // console.log(p1, p2)
+        arr.forEach(function(p4, p5) {
+            // console.log(p4, p5)
+            p4.goods.forEach(function(p7) {
+                if (p1 == p7.GOODS_ID) {
+                    p7.num = 0
+                }
+            })
+        })
+    });
+    setData("total", arr);
+    init();
+}
+// 下单
+$('.pay_btn').on('click', function() {
+    newObj()
+    var length = $('.cart:checked').length;
+    if (length == 0) {
+        dlctipbox.show('还没添加商品哦');
+    } else {
+        dlctipbox.loading();
+        var sum = $('.t_price').text().split('￥')[1] * 1;
+        setData('shopArr', arr1);
+        setTimeout((item, index) => {
+            dlctipbox.clear();
+            location.href = 'y_confirmOrder.html?sum=' + sum + '&deposit=' + getParam().deposit;
+        }, 2000)
+    }
+})
+
+function totals() {
+    var listObj = $('input[name=cart]:checked').parents(".lists");
+    var length = listObj.length;
+    var total = 0;
+    var total_num = 0;
+    for (var i = 0; i < length; i++) {
+        var single_price = listObj.find('.price').eq(i).text();
+        var single_num = parseInt(listObj.find('.num').eq(i).val());
+        total += single_price * single_num;
+        total_num = total_num + single_num * 1;
+    }
+    $('.t_price').text('￥' + total.toFixed(2));
+    $(".count").text(total_num)
+}
+
+function newObj() { //存为函数在支付的时候提交
+    arr1 = [];
+    var type = {
+            GOODS_TYPE_ID : "",
+            GOODS_TYPE_NAME  :"",
+            status : true
+        },
+        goods = [],
+        good = {};
+    goods.push()
+    var goodsArr = $('input[name=cart]:checked').parents('.list');
+    console.log(goodsArr)
+    for (var i = 0; i < goodsArr.length; i++) {
+        good = {
+            GOODS_PRICE: goodsArr.eq(i).data('price'),
+            GOODS_NAME: goodsArr.eq(i).data('name'),
+            GOODS_ID: goodsArr.eq(i).data('id'),
+            GOODS_FREIGHT: goodsArr.eq(i).data('freight'),
+            GOODS_SPECIF: "",
+            GOODS_IMAGE: goodsArr.eq(i).data('img'),
+            GOODS_NUMBER: goodsArr.eq(i).data('gnum'),
+            num: goodsArr.parents(".lists").eq(i).find('.num').val(),
+            search: true
+        }
+        goods.push(good);
+    }
+    obj = {
+        type: type,
+        goods: goods
+    };
+    arr1.push(obj);
+    console.log(arr1);
+}
+</script>

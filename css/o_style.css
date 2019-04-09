@@ -1,0 +1,135 @@
+/*********** 背景颜色 ***********/
+.bfff { background: #ffffff }
+.byellow { background: #ffa250; color: #ffffff; }
+.bblue { background: #55c7ef; color: #ffffff; }
+.bred { background: #ff6a6a; color: #ffffff; }
+.bgreen { background: #6ae3bf; color: #ffffff; }
+/*********** 字体颜色 ***********/
+.c999 { color: #999999 }
+.cyellow { color: #ffa250 }
+.cblue { color: #55c7ef }
+.cred { color: #ff6a6a }
+.cgreen { color: #6ae3bf }
+/*********** 按钮样式 ***********/
+.btn {
+    color: #ffffff;
+    padding: 5px 25px;
+    border-radius: 5px
+}
+.btnBottom {
+    color: #ffffff;
+    padding: 10px 25px;
+}
+.btn1 { 
+    background: linear-gradient(90deg, #6e8bd9 20%, #49c4ee 90%);
+    color: #ffffff;
+}
+.btn2 { 
+    background: linear-gradient(90deg, #0da2a4 20%, #41c4cc 90%);
+    color: #ffffff;
+}
+.btn3 { 
+    background: linear-gradient(90deg, #41c4cc 20%, #6e8bd9 90%);
+    color: #ffffff;
+}
+/*********** 间距样式 ***********/
+.mgtb-10 { margin: 10px 0 }
+.pflr-10 { padding: 0 10px }
+/*********** 遮 罩 层 ***********/
+.mask {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+.maskBox {
+    position: fixed;
+    margin: auto;
+    left: 20%;
+    top: 20%;
+}
+/*********** icon样式 ***********/
+.detail .icon, .confirm .icon, .recoverDetail .icon, .orderdetail .icon {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+}
+
+/** o_hotelList.html **/
+.navList .nav {
+    width: 20%;
+    background: #ffffff
+}
+.navList .nav .navbtn {
+    /* width: 50%; */
+    margin: auto;
+    padding: 10px 0;
+    text-align: center;
+    color: #626262
+}
+.navList .nav .navbtn.pick{
+    color: #46C3F9;
+    border-bottom: 1px solid #46C3F9;
+}
+.list .content{
+    padding: 10px 10px 10px 0;
+    margin-left: 10px
+}
+/** o_hotelList_Detail.html **/
+.detail .imgl img {
+    width: 15px;
+    margin-right: 10px
+}
+.detail .imgr {
+    height: 32px;
+}
+.detail .imgr img {
+    height: 32px;
+    margin-left: 10px
+}
+#addMore input, #renew input {
+    width: 70%;
+    margin: 0 10%;
+    border: #e1e1e1 solid 1px;
+    padding: 5%
+}
+.reducebtn, .plusbtn {
+    /* border: #e1e1e1 solid 1px; */
+}
+/** o_recovery.html **/
+#recovery .nav {
+    width: 50%
+}
+/** o_recoveryCofirm.html **/
+.confirm .list {
+    padding: 15px 15px 15px 0;
+}
+.confirm .title img {
+    width: 14px;
+}
+.confirm .check .input {
+    width: 100%;
+    height: 90%;
+    border: none;
+    text-align: center;
+}
+.box4 textarea {
+    border: 1px solid #d7d7d7;
+    border-radius: 10px;
+    padding: 10px;
+    background: #f5f5f5
+}
+/** o_recoveryDetail.html **/
+.recoverDetail .list{
+    padding: 15px 15px 15px 0;
+}
+.recoverDetail .message{
+    color: #999999;
+    text-indent: 1em
+}
+/** o_orderDetail.html **/

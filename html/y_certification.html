@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>实名认证</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+    window['adaptive'].desinWidth = 750;
+    window['adaptive'].baseFont = 28;
+    window['adaptive'].init();
+    </script>
+    <style type="text/css">
+
+    </style>
+
+    <body>
+        <form action="" method="post" name="form" id="form" onsubmit="return formSubmit()" enctype="multipart/form-data">
+            <input type="hidden" name="userId" id="userId" />
+            <div class="bw flex-sb p30_20 bdb list">
+                <span>真实姓名:</span>
+                <input type="text" id="name" name="certificationName" class="tae" tip-text="真实姓名" required placeholder="请输入真实姓名" />
+            </div>
+            <div class="bw flex-sb p30_20 bdb list">
+                <span>身份证号:</span>
+                <input class="tae cf" id="cf" type="number" name="certificationIdNumber" tip-text="身份证号" d-type="idnum" required placeholder="请输入身份证号" />
+            </div>
+            <div class="bw p20">
+                <span>身份证正反面:</span>
+                <label class="mt20">
+                    <input type="file" name="file1" id="file1" hidden="" tip-text="身份证正面图片" required multiple="multiple" />
+                    <div class="flex img-pane mt20">
+                        <img src="../img/addinfo.png" alt="" class="avatar br-circle mr10 pic" style="width: 5rem;height: 2.61rem;" />
+                    </div>
+                </label>
+                <p class="tac">正面</p>
+                <label class="mt20">
+                    <input type="file" name="file2" id="file2" hidden="" tip-text="身份证反面图片" required multiple="multiple" />
+                    <div class="flex img-pane mt20">
+                        <img src="../img/addinfo.png" alt="" class="avatar1 br-circle mr10 pic" style="width: 5rem;height: 2.61rem;" />
+                    </div>
+                </label>
+                <p class="tac">反面</p>
+            </div>
+            <button type="button" class="main_btn" onclick="formSubmitSelf(this,'form','https://mlxyhotel.https.xiaozhuschool.com/appuser/addCertification','https://mlxyhotel.https.xiaozhuschool.com/h5/html/y_selHotel.html')">认证</button>
+            <!-- <div class="main_btn">认证</div> -->
+        </form>
+        <!-- 认证成功弹出框 -->
+        <div class="mask" style="position: fixed;height: 100%;width: 100%;top:0;background:rgba(0,0,0,0.6);z-index: 1;display:none;">
+            <div class="redire-checkbox" style="display: block;">
+                <div class="redire-checkbox-icon"></div>
+                <span class="redire-checkbox-span" style="color: #3EB9FF;">认证成功!</span>
+                <div class="redire-checkbox-zu">
+                    <div class="redire-box-return" style="width: 100%;" id="finish-btn">
+                        <span class="redire-box-return-span" style="color: #333333;">完成</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/sweetalert2.all.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script src="../js/JForm.js"></script>
+<script src="../js/jquery.form.js"></script>
+<script>
+$('#userId').val(user_token().USER_ID);
+$("#finish-btn").click(function() {
+    $(".mask").fadeOut();
+})
+$('#file1').on('change', function() {
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = function(e) {
+        var value = e.target.result;
+        $('.avatar').attr('src', e.target.result);
+    };
+})
+$('#file2').on('change', function() {
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = function(e) {
+        var value = e.target.result;
+        $('.avatar1').attr('src', e.target.result);
+    };
+})
+// 表单验证
+function checkForm(obj, fromId, filter) {
+    var __options = { formId: fromId };
+    var __form = new JForm(__options);
+    if (!__form.checkFormData()) {
+        return false;
+    }
+    if (obj && obj !== '') {
+        $(obj).attr('disabled', 'disabled');
+    }
+    return true;
+}
+
+function formSubmitSelf(obj, formId, url, url2) {
+    $('#' + formId).ajaxSubmit({
+        type: 'post',
+        url: url,
+        dataType: 'json',
+        beforeSubmit: function() {
+            if (!checkForm(obj, formId)) {
+                return false;
+            }
+            swal({
+                background: 'transparent',
+                onOpen: function() {
+                    swal.showLoading()
+                }
+            })
+        },
+        success: function(res) {
+            swal({
+                showConfirmButton: false,
+                background: 'transparent',
+                onClose: function() {
+                    swal.hideLoading()
+                }
+            })
+            $(obj).removeAttr('disabled');
+            if (res.code == 1) {
+                swal({ type: 'success', title: res.msg, showConfirmButton: false }).catch(function(e) { console.log(e) });
+                if (url2 && url !== '') {
+                    setTimeout(function() {
+                        window.location.href = "./y_selHotel.html";
+                    }, 1200);
+                }
+            } else {
+                $(".swal2-container").hide();
+                dlctipbox.show(res.msg);
+                // swal({ type: 'error', title: res.msg, showConfirmButton: false, timer: 2000 }).catch(function(e) { console.log(e) });
+                // alert(res.msg);
+            }
+        },
+        error: function(res) {
+            dlctipbox.show(res.msg);
+            // swal({ type: 'error', title: res.msg, showConfirmButton: false, timer: 2000 }).catch(function(e) { console.log(e) });
+            console.log('网络异常,请刷新');
+        }
+    })
+}
+</script>

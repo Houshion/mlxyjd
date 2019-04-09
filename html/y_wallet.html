@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        我的钱包
+    </title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta content="webkit" name="renderer">
+    <meta content="no-siteapp" http-equiv="Cache-Control" />
+    <meta content="yes" name="mobile-web-app-capable" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no,email=no,address=no" name="format-detection" />
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <link href="../css/common.css" rel="stylesheet" />
+    <link href="../css/dropload.css" rel="stylesheet" />
+    <script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="../js/adaptive.js" type="text/javascript"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+        window['adaptive'].baseFont = 28;
+        window['adaptive'].init();
+    </script>
+    <style type="text/css">
+        .banner {
+            color: #fff;
+            height: 3.5rem;
+            position: relative;
+            background: linear-gradient(to bottom, #78c6ff, #5c9dfe);
+            -webkit-background-size: 100%;
+            background-size: 100%;
+        }
+
+        .banner>p {
+            color: #fff;
+        }
+
+        .recharge {
+            width: 2.56rem;
+            height: .6rem;
+            border-radius: 50px;
+        }
+
+        .line {
+            width: 1px;
+            height: 2.0rem;
+            background: #e8e8e8;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="bigBox">
+<div class="container"> -->
+    <div class="cont" style="position: relative;">
+        <div class="banner flex flex-column">
+            <p class="font12 mt50">可用余额（元）</p>
+            <p class="font30 mt10 yuePrice">0.00</p>
+            <a class="mt50 recharge flex bw" href="y_recharge.html">
+                <img src="../img/y_9.png" style="width:.29rem;height:.29rem" />
+                <span class="ml20 color2">充值</span>
+            </a>
+        </div>
+        <div class="lh100 plr20 col6">明细</div>
+        <div class="ListBox">
+            <ul class="main_list">
+                <!--            <div class="flex-sb bw bdb p20">
+                <ul>
+                    <p>余额消费</p>
+                    <p class="col9 mt10">2017-01-16</p>
+                </ul>
+                <span class="color2">-120.00</span>
+            </div> -->
+                <!-- <div class="flex-sb bw bdb p20">
+                <ul>
+                    <p>余额消费</p>
+                    <p class="col9 mt10">2017-01-16</p>
+                </ul>
+                <span class="color1">-120.00</span>
+            </div> -->
+                <!--             <div class="flex-sb bw bdb p20">
+                <ul>
+                    <p>余额消费</p>
+                    <p class="col9 mt10">2017-01-16</p>
+                </ul>
+                <span class="color2">-120.00</span>
+            </div>
+            <div class="flex-sb bw bdb p20">
+                <ul>
+                    <p>余额消费</p>
+                    <p class="col9 mt10">2017-01-16</p>
+                </ul>
+                <span class="color1">-120.00</span>
+            </div> -->
+            </ul>
+        </div>
+    </div>
+    <!--   </div>
+    </div> -->
+    <script type="text/javascript" src="../js/JForm.js"></script>
+    <script type="text/javascript" src="../js/dlc.js"></script>
+    <script type="text/javascript" src="../js/jquery.form.js"></script>
+    <script type="text/javascript" src="../js/dropload.min.js"></script>
+</body>
+<script type="text/javascript">
+    var page = 0,
+        size = 10,
+        orderId = '',
+        orderType = '',
+        orderYueId = '';
+    $('.list').click(function () {
+        location.href = "y_change.html"
+    })
+    dlc_request('appHostel/findYue', { //获取余额
+        userId: user_token().USER_ID
+    }, function (res) {
+        console.log(res);
+        if (res.code == 1) {
+            $('.yuePrice').text(res.findYue.listData[0].yuePrice == '' ? '0.00' : Number(res.findYue.listData[0]
+                .yuePrice).toFixed(2))
+        } else {
+            dlctipbox.show(res.msg);
+        }
+    })
+
+    $('.cont').on('click', '.w_list', function () {
+        console.log(orderType);
+        orderId = $(this).data('id');
+        orderType = $(this).data('type');
+        number = $(this).data('number');
+        money = $(this).data('money');
+        location.href = 'y_saleRecord.html?id=' + orderId + '&state=' + orderType + '&money=' + money +
+            '&number=' + number;
+    })
+
+    $('.ListBox').dropload({
+        scrollArea: window,
+        domDown: {
+            domClass: 'dropload-up',
+            domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+            domUpdate: '<div class="dropload-update">↑释放更新</div>',
+            domLoad: '<div class="dropload-load">○加载中...</div>'
+        },
+        domDown: {
+            domClass: 'dropload-down',
+            domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+            domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+            domNoData: '<div class="dropload-noData">暂无数据</div>'
+        },
+        loadDownFn: function (me) {
+            $('.dropload-down').remove();
+            page++;
+            var str = '';
+            $.ajax({
+                type: 'post',
+                url: dlcUrl() + "appHostel/listOrderYue",
+                data: {
+                    userId: user_token().USER_ID,
+                    payType: 3,
+                    orderId: '',
+                    orderType: '',
+                    pageSize: size,
+                    currentPage: page
+                },
+                async: false,
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    if (res.code == 1) {
+                        var list = res.yueOrderInfo.listData;
+                        if (list.length >= 1) {
+                            list.forEach((item, index) => {
+                                var yue, color, name, zf;
+                                item.yueDepositPrice ? yue = item.yueDepositPrice : yue =
+                                    0;
+                                if (item.orderType == 0) {
+                                    color = "color2";
+                                    name = "商品订单";
+                                    zf = "-"
+                                } else if (item.orderType == 1) {
+                                    name = item.content;
+                                    if (item.content != "酒店订单") {
+                                        zf = "+";
+                                        color = "color1";
+                                    } else {
+                                        zf = "-";
+                                        color = "color2";
+                                    }
+                                } else {
+                                    color = "color1";
+                                    name = item.content;
+                                    zf = "+";
+                                }
+                                str +=
+                                    '<div class="flex-sb bw bdb p20 w_list" data-id=' +
+                                    item.yueId + ' data-type=' + item.orderType +
+                                    ' data-number=' + item.yueNo + '>' +
+                                    '<ul>' +
+                                    '<p>' + name + '</p>' +
+                                    '<p class="col9 mt10">' + item.createDate + '</p>' +
+                                    '</ul>' +
+                                    '<span class=' + color + '>' + zf + (item.yuePrice ==
+                                        undefined ? '0' : (
+                                            item.yuePrice + yue).toFixed(2)) +
+                                    '</span>' +
+                                    '</div>'
+
+                            })
+                        } else {
+                            me.lock();
+                            me.noData();
+                        }
+                    } else {
+                        me.lock();
+                        me.noData();
+                        console.log(res.msg);
+                    }
+                    setTimeout(function () {
+                        $('.main_list').append(str);
+                        // 插入数据到页面，放到最后面
+                        // 每次数据插入，必须重置
+                        me.resetload();
+                    }, 500);
+                },
+                error: function (err) {
+                    me.resetload();
+                    console.log(JSON.stringify(err));
+                }
+            })
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>微商城</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+    window['adaptive'].desinWidth = 750;
+    window['adaptive'].baseFont = 28;
+    window['adaptive'].init();
+    </script>
+    <style type="text/css">
+    .searchBox {
+        height: 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    #search {
+        width: 80%;
+        padding-left: .5rem;
+        padding-bottom: .2rem;
+        background: url(../img/search.png) no-repeat;
+        -webkit-background-size: .28rem .28rem;
+        background-size: .28rem .28rem;
+    }
+
+
+    .lBox {
+        width: 2rem;
+        height: 10rem;
+        position: fixed;
+        border-right: 1px solid #e8e8e8;
+        overflow-y: scroll;
+    }
+
+    .rBox {
+        margin-left: 2rem;
+    }
+
+    .lBox li {
+        height: 1rem;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    .lBox li.active {
+        color: #fff;
+        background: linear-gradient(to right, #6c8eda, #4bc0ed);
+    }
+
+    .bottom {
+        height: 1rem;
+        border-top: 1px solid #e8e8e8;
+    }
+
+    .c_box {
+        /*margin-left: 1.2rem;*/
+    }
+
+    .wh {
+        width: 0.48rem;
+        height: 0.48rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #e5e5e5;
+    }
+
+    .minus {
+        border-right: none;
+        border-radius: 6px 0 0 6px;
+    }
+
+    .add {
+        border-left: none;
+        border-radius: 0 6px 6px 0;
+    }
+
+    b {
+        font-weight: normal;
+    }
+
+    #pay {
+        width: 2rem;
+        height: 1rem;
+        background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        color: #fff;
+    }
+
+    .tip {
+        position: absolute;
+        width: 0.3rem;
+        height: 0.31rem;
+        background: #ff6a6a;
+        color: #fff;
+        font-size: 0.24rem;
+        top: -0.1rem;
+        left: 100%;
+        border-radius: 1rem;
+    }
+    </style>
+
+    <body>
+        <div class="bigBox">
+            <ul class="container">
+                <div class="bw searchBox flex">
+                    <input class="bdb" type="text" name="search" id="search" placeholder="请输入关键字搜索">
+                </div>
+                <div class="mt20 mBox" style="display:flex;margin-top: 1.2rem;overflow: hidden;">
+                    <div class="lBox bw">
+                        <!--            <li class="flex active">餐食</li>
+                        <li class="flex">水果</li>
+                        <li class="flex">保健品</li> -->
+                    </div>
+                    <div class="rBox w100">
+                        <!-- <a class="list flex_a bw p20 bdb" data-id="32d76189ff4ccbd4a8586359eb91a3a82cbd" href="y_shopDetail.html?id=32d76189ff4ccbd4a8586359eb91a3a82cbd">
+                            <ul class="ml20"><img class="img" src="http://mlxyhotel.link.newsupplytech.com/uploadFiles/uploadImgs/20180630/5e9246eb6fa04b658d16ef5c7abae016.jpg" style="width:1.7rem;height:1.5rem;">
+                                <p>燕窝</p>
+                                <p class="color1 mt10 font16">￥<span class="price">40</span>.00</p>
+                            </ul>
+                            <div class="flex c_box">
+                                <label class="wh minus" data-i="0" data-ii="0">
+                                    <button class="font18">−</button>
+                                </label>
+                                <input class="font18 wh tac num" type="number" name="" value="0" data-name="燕窝" data-price="40" data-pic="http://mlxyhotel.link.newsupplytech.com/uploadFiles/uploadImgs/20180630/5e9246eb6fa04b658d16ef5c7abae016.jpg" data-id="32d76189ff4ccbd4a8586359eb91a3a82cbd" data-track="999">
+                                <label class="wh add" data-i="0" data-ii="0">
+                                    <button class="font18">+</button>
+                                </label>
+                            </div>
+                        </a> -->
+                        <!--       <div class="list flex_a bw p20 bdb">
+                            <img class="img" src="../img/goods.png" style="width:1.7rem;height:1.5rem;" />
+                            <ul class="ml20">
+                                <a href="y_shopDetail.html">可乐鸡翅</a>
+                                <p class="color1 mt10 font16">￥<span class="price">80</span>.00</p>
+                                <div class="flex c_box">
+                                    <label class="wh minus">
+                                        <button class="font18">&minus;</button>
+                                    </label>
+                                    <input class="font18 wh tac num" type="number" name="" value="0" />
+                                    <label class="wh add">
+                                        <button class="font18">+</button>
+                                    </label>
+                                </div>
+                            </ul>
+                        </div> -->
+                    </div>
+                </div>
+            </ul>
+            <div class="bw flex">
+                <div class="flex1 flex-sb plr24">
+                    <p style="position: relative;" id="gwc">
+                        <img src="../img/shopcar.png" alt="" style="width: .44rem;height:.44rem;" id="car">
+                        <b class="tip tac">0</b>
+                    </p>
+                    <span class="col9">合计：
+                        <b class="col_price font17 color1">￥0.00</b>
+                    </span>
+                </div>
+                <span id="pay" class="flex font16">去结算</span>
+            </div>
+            <!-- <div class="bottom flex-sb bw">
+                <ul class="flex-sb">
+                    <img src="../img/shopcar.png" style="width:.44rem;height:.44rem;" />
+                </ul>
+            </div> -->
+        </div>
+    </body>
+
+</html>
+<!-- <script src="../js/underscore-min.js"></script> -->
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+var total = [],
+    types = [],
+    goods = [];
+var hostelId = 0;
+var deposit = 0; //押金
+var searchList, searchListType, searchListGoods, typeName; //搜索数组数据
+var SearchStatus = false;
+
+if (user_token()) {
+    if (user_token().USER_ID) {
+        if (getData('total')) {
+            total = getData('total');
+            changeLeft(0);
+        } else {
+            getTotal();
+        }
+    } else {
+        location.href = 'y_login.html?type=4'
+    }
+} else {
+    location.href = 'y_login.html?type=4'
+}
+
+function getTotal() {
+    dlc_request('appHotelShop/hotelId', {}, function(res) {
+        if (res.code == 1) {
+            hostelId = res.hostelId.HOTEL_ID;
+            //分类信息
+            dlc_request('appHotelShop/shopType', {
+                hotelId: hostelId
+            }, function(res) {
+                console.log(res);
+                if (res.code == 1) {
+                    var list = res.hostelList.listData;
+                    var str = '';
+                    var status = false;
+                    list.forEach((item, index) => {
+                        item.status = true;
+                        if (list.length == index + 1) {
+                            status = true; //判断是否都加载完毕
+                        }
+                        type(item.GOODS_TYPE_ID, item, index, status, search);
+                    })
+                } else {
+                    dlctipbox.show(res.msg);
+                }
+            })
+        } else {
+            dlctipbox.show(res.msg);
+        }
+    })
+}
+
+// 搜索功能
+var searchArr = [];
+$('.bigBox').on('keydown', '#search', function(e) {
+    var shopName = $('#search').val();
+    $('.lBox').children().remove();
+    $('.rBox').children().remove();
+    if (e.keyCode == 13) {
+        console.log(shopName);
+        dlc_request('appHotelShop/listHostelShop', { shopName: shopName, pageSize: 10, currentPage: 1 }, function(res) {
+            console.log(res);
+            if (res.code == 1) {
+                var list = res.hostelShopList.listData;
+                if (list.length == 0) {
+                    dlctipbox.show('暂无此商品')
+                    getTotal()
+                } else {
+                    var lstr = '';
+                    var rstr = '';
+                    list.forEach((item, index) => {
+                        lstr += '<li class="flex active" data-index="0" data-id=' + item.GOODS_TYPE_ID + '>' + item.GOODS_TYPE_NAME + '</li>'
+                        rstr += '<a class="list flex_a bw p20 bdb flex-sb" data-id=' + item.GOODS_ID + '><ul class="ml20 flex toDetail"> <img class="img" src=' + item.GOODS_IMAGE.split(',')[0] + ' style="width:1.7rem;height:1.5rem;"><em class="flex-column ml20"><p>' + item.GOODS_NAME + '</p><p class="color1 mt10 font16">￥<span class="price">' + item.GOODS_PRICE + '</span></p></em></ul><div class="flex c_box"> <label class="wh minus" data-i="0" data-ii="0"><button class="font18">−</button></label><input class="font18 wh tac num" type="number" name="" value="0" data-name="燕窝" data-price="40" data-pic="https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/20180630/5e9246eb6fa04b658d16ef5c7abae016.jpg" data-id="32d76189ff4ccbd4a8586359eb91a3a82cbd" data-track="999"><label class="wh add" data-i="0" data-ii="0"><button class="font18">+</button></label></div></a>'
+                    })
+                }
+            } else {
+                dlctipbox.show(res.msg);
+            }
+        })
+    }
+})
+// $('.bigBox').on('blur', '#search', function() {
+//     var shopName = $('#search').val();
+//     if (shopName == '') {
+//         refresh()
+//     } else {
+//         for (var i = 0; i < total.length; i++) {
+//             for (var j = 0; j < total[i].goods.length; j++) {
+//                 if (total[i].goods[j].GOODS_NAME.indexOf(shopName) != -1) {
+//                     total[i].goods[j].search = true
+//                 } else {
+//                     total[i].goods[j].search = false;
+//                 }
+//             }
+//         }
+//     }
+//     checkHaveGoods(total)
+// })
+//判断是否有该商品
+function checkHaveGoods(total) {
+    var a = 0;
+    for (var i = 0; i < total.length; i++) {
+        for (var j = 0; j < total[i].goods.length; j++) {
+            if (total[i].goods[j].search) {
+                changeLeft(0);
+                break;
+            } else {
+                a++;
+            }
+        }
+    }
+    if (i * j == a) {
+        dlctipbox.show("没有该商品");
+        refresh();
+    }
+}
+// 刷新商品
+function refresh() {
+    for (var i = 0; i < total.length; i++) {
+        total[i].types.status = true;
+        for (var j = 0; j < total[i].goods.length; j++) {
+            total[i].goods[j].search = true;
+        }
+    }
+    changeLeft(0);
+}
+
+$('.lBox').on('click', 'li', function() {
+    index = $(this).index();
+    typeId = $(this).data('id');
+    $(this).addClass('active').siblings().removeClass('active');
+    changeLeft($(this).data('index'))
+});
+//列表信息
+function type(typeId, types, tindex, status, search) {
+    total = [];
+    dlctipbox.loading();
+    dlc_request('appHotelShop/shop', {
+        typeId: typeId
+    }, function(res) {
+        dlctipbox.clear();
+        if (res.code == 1) {
+            var str = '';
+            var list = res.hostelList.listData;
+            var tgoods = [];
+            list.forEach((item, index) => {
+                item.num = 0;
+                item.search = true;
+                tgoods.push(item);
+            })
+            total.push({
+                "types": types,
+                "goods": tgoods
+            });
+            if (status) { //如果都加载完毕执行
+                setData('total', total);
+                changeLeft(0);
+            }
+        } else {
+            dlctipbox.show(res.msg);
+        }
+    })
+}
+
+function changeLeft(index) {
+    // if (SearchStatus) total = searchList;
+
+    var lstr = '';
+    for (var i = 0; i < total.length; i++) {
+        var types = total[i].types;
+        var goods = total[i].goods;
+        for (var j = 0; j < goods.length; j++) {
+            if (goods[j].search) {
+                break;
+            } else {
+                types.status = false;
+            }
+        }
+        if (types.status) {
+            lstr += '<li class="flex" data-index="' + i + '" data-id=' + types.GOODS_TYPE_ID + '>' + types.GOODS_TYPE_NAME +
+                '</li>';
+        }
+    }
+    $('.lBox').empty().append(lstr);
+    $('.lBox li').eq(index).addClass('active');
+    changeRight(index);
+
+}
+
+function changeRight(index) {
+    var rstr = '';
+    // console.log(index)
+    for (var j = 0; j < total[index].goods.length; j++) {
+        if (total[index].goods[j].search) {
+            rstr += '<a class="list flex_a bw p20 bdb flex-sb" data-id=' + total[index].goods[j].GOODS_ID +
+                '>' +
+                '<ul class="ml20 flex toDetail" data-id=' + total[index].goods[j].GOODS_ID + ' > ' +
+                '<img class="img" src="' + total[index].goods[j].GOODS_IMAGE +
+                '" style="width:1.7rem;height:1.5rem;">' +
+                '<em class="flex-column ml20">' +
+                '<p>' + total[index].goods[j].GOODS_NAME +
+                '</p>' +
+                '<p class="color1 mt10 font16">￥<span class="price">' + total[index].goods[j].GOODS_PRICE +
+                '</span>.00</p>' +
+                '</em>' +
+                '</ul>' +
+                '<div class="flex c_box">' +
+                ' <label class="wh minus" data-i="' + total[index].types.GOODS_TYPE_ID + '" data-ii="' + total[index].goods[j].GOODS_ID + '">' +
+                '<button class="font18">−</button>' +
+                '</label>' +
+                '<input class="font18 wh tac num" type="number" name="" value="' + total[index].goods[j].num +
+                '" data-name=' + total[index].goods[j].GOODS_NAME + ' data-price=' + total[index].goods[j].GOODS_PRICE +
+                ' data-pic=' + total[index].goods[j].GOODS_IMAGE + ' data-id=' + total[index].goods[j].GOODS_ID +
+                ' data-track="999">' +
+                '<label class="wh add" data-i="' + total[index].types.GOODS_TYPE_ID  + '" data-ii="' + total[index].goods[j].GOODS_ID + '">' +
+                '<button class="font18">+</button>' +
+                '</label>' +
+                '</div>' +
+                '</a>'
+        }
+    }
+    $('.rBox').html(rstr);
+    count()
+}
+//添加购物车
+var tip = $('.tip').text() * 1;
+$('.bigBox').on('click', '.add', function(e) {
+    if ($(this).parents().is('.container')) {
+        shoppingCartAnimate($(this).parents('.list').find('.img'), $('#car'));
+    }
+    var i = $(this).data("i");
+    var ii = $(this).data("ii");
+    console.log(total[i])
+    console.log(ii)
+    var num = total[i].goods[ii].num + 1;
+    total[i].goods[ii].num = num;
+    totals(this, 1);
+    setData('total', total);
+})
+$('.bigBox').on('click', '.toDetail', function(e) {
+    id = $(this).data('id')
+    location.href = 'y_shopDetail.html?id=' + id;
+    setData('total', total);
+    return false;
+})
+//减少购物车
+$('.bigBox').on('click', '.minus', function(e) {
+    var i = $(this).data("i");
+    var ii = $(this).data("ii");
+    var num = total[i].goods[ii].num - 1;
+    if (num < 0) {
+        num = 0
+    }
+    total[i].goods[ii].num = num;
+    totals(this, 2);
+    setData('total', total);
+})
+
+// 去结算
+$('#pay').on('click', function() {
+    if ($('.col_price').text() == '￥0.00') {
+        dlctipbox.show('还没有添加商品哦');
+    } else {
+        total.sum = $('.col_price').text().split('￥')[1] * 1;
+        setData("total", total);
+        dlctipbox.loading();
+        setTimeout(() => {
+            location.href = 'y_confirmOrder.html';
+        }, 2000);
+    }
+})
+$('.bigBox').on('click', '#gwc', function() {
+    if ($('.tip').text() == 0) {
+        dlctipbox.show('请先添加商品')
+    } else {
+        setData("total", total);
+        dlctipbox.loading();
+        setTimeout(() => {
+            location.href = 'y_shopCart.html?deposit=' + deposit;
+        }, 2000);
+        console.log(JSON.stringify(total));
+    }
+})
+
+var tip = 0;
+
+function totals(_this, type) {
+    var count = 0,
+        num = 0, //单个数量
+        single_price = 0, //单价
+        initial_sum = 0, //总金额
+        numbers = $(_this).parents('.list').find('.num').val() * 1; //单个的input数量
+
+    if (type == 1) { //加
+        numbers = numbers + 1;
+        shoppingCartAnimate($(_this).parents('.list').find('.img'), $('#car'));
+        $(_this).parents('.list').find('.num').val(numbers);
+    } else if (type == 2) { //减
+        if (numbers > 0) {
+            numbers = numbers - 1;
+            $(_this).parents('.list').find('.num').val(numbers);
+        }
+    }
+    for (var i = 0; i < total.length; i++) { //合计数量和总价
+        for (var j = 0; j < total[i].goods.length; j++) {
+            count += total[i].goods[j].num;
+            initial_sum += total[i].goods[j].num * total[i].goods[j].GOODS_PRICE;
+        }
+    }
+    $('.tip').text(count);
+    $('.col_price').text("￥" + initial_sum.toFixed(2));
+    // count();
+}
+
+function count() {
+    var count = 0, //总个数
+        num = 0, //数量
+        price = 0, //单价
+        totalPrice = 0; //统计总价
+    for (var i = 0; i < total.length; i++) {
+        for (var j = 0; j < total[i].goods.length; j++) {
+            count += total[i].goods[j].num;
+            num = total[i].goods[j].num;
+            price = total[i].goods[j].GOODS_PRICE;
+            totalPrice = totalPrice + num * price;
+        }
+    }
+    $('.tip').text(count);
+    $('.col_price').text("￥" + totalPrice.toFixed(2));
+}
+</script>

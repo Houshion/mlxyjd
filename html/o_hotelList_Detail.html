@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>酒店订单</title>
+    <style>
+        #renew .btn1,
+        #returnOrder .btn1 {
+            border-bottom-right-radius: 10px
+        }
+        .flexBoth {
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="detail">
+        <div class="main pd-b-50">
+            <div class="box1 bfff pd-10 mg-t-10 hide d1">
+                <div class="flex">
+                    <div class="ta-left wd-50 flex lh32">
+                        <div class="icon byellow">!</div>
+                        <div>已预订</div>
+                    </div>
+                    <div class="ta-right wd-50 box">
+                        <span class="c999">房间号：</span>
+                        <span class="roomNum"></span>
+                        <div class="imgr">
+                            <img src="../img/i_qrcode.png" class="openDoor" onclick='showQrCode(2)'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box1 bfff pd-10 mg-t-10 hide d2">
+                <div class="flex">
+                    <div class="ta-left wd-30 flex lh32">
+                        <div class="icon bblue">!</div>
+                        <div>已入住</div>
+                    </div>
+                    <div class="ta-right wd-70 flex flexBoth">
+                        <span class="c999">房间号：</span>
+                        <span class="roomNum"></span>
+                        <div class="imgr doorQRCODE">
+                            <img src="../img/o_lock.png" class="openDoor" onclick='showQrCode(1)'>
+                        </div>
+                        <div class="imgr">
+                            <img src="../img/i_qrcode.png" class="openDoor" onclick='showQrCode(2)'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box1 bfff pd-10 mg-t-10 hide d3">
+                <div class="flex">
+                    <div class="ta-left wd-50 flex lh32">
+                        <div class="icon bred">!</div>
+                        <div>退房中</div>
+                    </div>
+                    <div class="ta-right wd-50 box">
+                        <span class="c999">房间号：</span>
+                        <span class="roomNum"></span>
+                        <div class="imgr">
+                            <img src="../img/i_qrcode.png" class="openDoor" onclick='showQrCode(2)'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box1 bfff pd-10 mg-t-10 hide d4">
+                <div class="flex">
+                    <div class="ta-left wd-50 flex lh32">
+                        <div class="icon bgreen">!</div>
+                        <div>已完成</div>
+                    </div>
+                    <div class="ta-right wd-50 box lh32">
+                        <span class="c999">房间号：</span>
+                        <span class="roomNum"></span>
+                        <div class="imgr">
+                            <img src="../img/i_qrcode.png" class="openDoor" onclick='showQrCode(2)'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box1 bfff pd-10 mg-t-10 hide d0">
+                <div class="flex">
+                    <div class="ta-left wd-50 flex lh32">
+                        <div class="icon bred">!</div>
+                        <div>未付款</div>
+                    </div>
+                    <div class="ta-right wd-50 lh32">
+                        <span class="c999">房间号：</span>
+                        <span class="roomNum"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="box2 bfff pd-10 mg-t-10">
+                <div class="name">
+                    <span class="c999">酒店名称</span>
+                    <span></span>
+                </div>
+                <div class="address">
+                    <span class="c999">酒店地址</span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="box3 bfff pd-10 mg-t-10">
+                <div class="list border-b list1">
+                    <div class="listTitle font16">房间消耗品列表</div>
+                </div>
+                <div class="list border-b">
+                    <div class="flex flexBetween mgtb-10">
+                        <div class="font16">房间类型</div>
+                        <div class="c999">
+                            <span class="mg-r-10 roomType"></span>
+                            <span class="roomprice"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="list border-b">
+                    <div class="flex flexBetween mgtb-10">
+                        <div class="font16">租房类型</div>
+                        <div class="c999 rentType"></div>
+                    </div>
+                </div>
+                <div class="list border-b hide d1">
+                    <div class="flex flexBetween mgtb-10">
+                        <div class="font16">房间号码</div>
+                        <div class="c999 roomNum"></div>
+                    </div>
+                </div>
+                <div class="list border-b" id="inTime">
+                    <div class="flex flexBetween mgtb-10">
+                        <div class="font16">入住天数</div>
+                        <div class="c999 inDay"></div>
+                    </div>
+                </div>
+                <div class="list border-b">
+                    <div class="flex flexBetween mgtb-10">
+                        <div class="font16">入住时间</div>
+                        <div class="c999 inTime"></div>
+                    </div>
+                </div>
+                <div class="list border-b hide">
+                    <div class="flex flexBetween mgtb-10">
+                        <div class="font16">加床</div>
+                        <div class="c999">
+                            <span class="mg-r-10">
+                                <span>2</span>张</span>
+                            ￥150.00
+                        </div>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="flex flexBetween mgtb-10">
+                        <div class="font16">实付金额</div>
+                        <div class="c999 ta-right">
+                            <div class="cred sumPrice"></div>
+                            <div class="depositMsg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box4 bfff pd-10 mg-t-10 lh32">
+            </div>
+            <div class="box5 bfff pd-10 mg-t-10 lh26 hide d4">
+                <div class="list border-b list1">
+                    <div class="listTitle font16">已消耗物品</div>
+                </div>
+                <div class="list border-b">
+                    <div class="mg-t-10">
+                        <div class="fr">
+                            <span class="c999">小计：</span> ￥
+                            <span class="totalPrice"></span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="mg-t-10">
+                        <div class="fr">
+                            <span class="c999">押金：</span> ￥
+                            <span class="deposit"></span>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="list">
+                    <div class="mg-t-10">
+                        <div class="fr cred">
+                            <span class="c999">合计退还押金：</span> ￥
+                            <span class="totalCount"></span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed_bottom bfff">
+
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="mask hide"></div>
+    <!-- 隐藏框 -->
+    <div class="loading hide">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <div style="margin-top: 15px">请稍候...</div>
+    </div>
+    <div class="wd-60 bfff hide maskBox radius10" id="qrCode">
+        <div class="pd-15">
+            <img src="../img/qrCode.png" class="wd-100 hide">
+            <div class="qrCodeLoading pd-20">
+                <div class="loading ta-center">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <div class="ta-center" style="margin-top: 15px;">加载中...</div>
+                </div>
+            </div>
+            <div class="ta-center mg-t-10 codeName">订单二维码</div>
+        </div>
+    </div>
+    <div class="wd-60 bfff hide maskBox radius10" id="returnOrder">
+        <div class="pd-15">
+            <div class="ta-center">
+                <img src="../img/o_return.png" class="wd-40 mg-10">
+                <div class="returnContent">是否确认退订？</div>
+            </div>
+        </div>
+        <div class="border-t flex">
+            <div class="box wd-50 pd-15 border-r colbbb" onclick="hideModal($('#returnOrder'))">取消</div>
+            <div class="box wd-50 pd-15 btn1 confirm">确认</div>
+        </div>
+    </div>
+    <div class="wd-60 bfff hide maskBox radius10" id="renew">
+        <div class="pd-15">
+            <div class="pd-t-15 pd-b-15">
+                <div>续约天数：</div>
+                <div class="flex mgtb-10 fontb">
+                    <div class="wd-15 reducebtn box">-</div>
+                    <div class="wd-70">
+                        <input type="number" class="input ta-center" value="1" readonly>
+                    </div>
+                    <div class="wd-15 plusbtn box">+</div>
+                </div>
+            </div>
+            <div>
+                金额：
+                <span class="cred">￥
+                    <span class="price">0.00</span>
+                </span>
+            </div>
+        </div>
+        <div class="border-t flex">
+            <div class="box wd-50 pd-15 border-r colbbb" onclick="hideModal($('#renew'))">取消</div>
+            <div class="box wd-50 pd-15 btn1 confirm">确认</div>
+        </div>
+    </div>
+</body>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/o_base.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    var resData; //接口返回数据
+    $(function () {
+
+        var price;
+
+        /****** 加床 ******/
+        $("#addMore").on("click", ".plusbtn", function () {
+            var number = $("#addMore input.input");
+            number.val(parseInt(number.val()) + 1);
+            // 计算价格
+            count("addMore", number.val())
+        });
+        $("#addMore").on("click", ".reducebtn", function () {
+            var number = $("#addMore input.input");
+            var val = parseInt(number.val());
+            if (val > 0) {
+                number.val(val - 1);
+            }
+            // 计算价格
+            count("addMore", val)
+        });
+        /****** 续租 ******/
+        $("#renew").on("click", ".plusbtn", function () {
+            var number = $("#renew input.input");
+            number.val(parseInt(number.val()) + 1);
+            // 计算价格
+            count("renew", number.val())
+        });
+
+        $("#renew").on("click", ".reducebtn", function () {
+            var number = $("#renew input.input");
+            var val = parseInt(number.val());
+            if (val > 1) {
+                number.val(val - 1);
+            }
+            // 计算价格
+            count("renew", number.val())
+        });
+
+        function count(obj, val) {
+            switch (obj) {
+                case "addMore":
+                    val = val * 20;
+                    $("#addMore .price").text(val.toFixed(2))
+                    break;
+                case "renew":
+                    val = val * price;
+                    $("#renew .price").text(val.toFixed(2))
+                    break;
+            }
+        }
+
+        function getDetail() {
+
+            $(".loading").show();
+            $(".mask").show();
+            var param = {
+                userId: user_token().USER_ID, // 用户ID
+                orderId: getParam().id,
+                state: '',
+                pageSize: '', // 每页的条数
+                currentPage: '', // 第几页
+            }
+
+            switch (getParam().type) {
+                case "d1":
+                    param.state = 1
+                    $(".fixed_bottom").html(
+                        '<div class="btnBottom btn1 fr returnOrder" onclick=\'showModal($("#returnOrder"))\'>退订</div>'
+                    )
+                    break;
+                case "d2":
+                    param.state = 2
+                    $(".fixed_bottom").html(
+                        '<div class="btnBottom btn1 fr returnOrder" onclick=\'showModal($("#returnOrder"))\'>退房</div>' +
+                        '<div class="btnBottom btn2 fr renew" onclick=\'showModal($("#renew"))\'>续租</div>'
+                    )
+                    break;
+                case "d4":
+                    param.state = 4;
+                    break;
+            }
+            ajaxPost(param, "appHostel/listOrderHotel", function (res) {
+                $(".loading").hide();
+                $(".mask").hide();
+                if (res.code == 1) {
+                    var listInfo = res.orderList.listData[0];
+
+                    /** 当前日期大于预计结束订单日期去除“续约”按钮功能 **/
+                    var aDay = 86400000;
+                    var now = new Date();
+                    var nowDate = now.getTime();
+                    var out = new Date(listInfo.inRoomDate)
+                    var outDate = out.getTime() + aDay * listInfo.ORDER_DATENUMBER
+                    if (nowDate - outDate > aDay) {
+                        $(".renew").hide()
+                    }
+
+                    resData = listInfo; //赋值全局变量
+                    /** 判断是否可以退订 **/
+                    if (getEndDay(resData.inRoomDate, resData.ORDER_DATENUMBER) && getParam().type ==
+                        "d1") {
+                        $(".fixed_bottom").html(
+                            '<div class="btnBottom btn1 fr returnOrder" onclick=\'showModal($("#returnOrder"))\'>退订</div>'
+                        )
+                    }
+                    /** 判断当前时间是否大于预计退房时间，若超出则不予开锁按钮 **/
+                    if (getEndDay(resData.inRoomDate, resData.ORDER_DATENUMBER) && getParam().type ==
+                        "d2") {
+                        $(".doorQRCODE").hide();
+                    }
+                    /** 判断是否可以退订 **/
+                    // 房号
+                    $(".roomNum").text(listInfo.content.split("/")[1]);
+                    // 订单时间编号等信息
+                    $(".box4").html(
+                        '<div class="num">' +
+                        '<span>订单编号：</span>' +
+                        '<span class="c999">' + listInfo.ORDERID + '</span>' +
+                        '</div>' +
+                        '<div class="no">' +
+                        '<span>交易单号：</span>' +
+                        '<span class="c999">' + (listInfo.HOTEL_ORDER_NO ? listInfo.HOTEL_ORDER_NO :
+                            "无交易单号") + '</span>' +
+                        '</div>' +
+                        '<div class="ctime">' +
+                        '<span>创建时间：</span>' +
+                        '<span class="c999">' + listInfo.createOrderDate +
+                        '</span>' +
+                        '</div>' +
+                        '<div class="ptime">' +
+                        '<span>付款时间：</span>' +
+                        '<span class="c999">' + (listInfo.HOTEL_ORDER_PAYDATE ? listInfo.HOTEL_ORDER_PAYDATE :
+                            "未付款") + '</span>' +
+                        '</div>' +
+                        '<div class="otime hide d4">' +
+                        '<span>完成时间：</span>' +
+                        '<span class="c999">' + (listInfo.recoveryDate ? listInfo.recoveryDate : "") +
+                        '</span>' +
+                        '</div>'
+                    )
+                    if (listInfo.HOTEL_PAY_TYPE == 3) {
+                        $(".no").hide();
+                        $(".ptime span").eq(1).text(listInfo.createOrderDate)
+                    }
+                    // 酒店名称地址
+                    $(".name span").eq(1).text(listInfo.HOTEL_Name);
+                    $(".address span").eq(1).text(listInfo.address);
+                    // 房间消耗品信息
+                    var box3List = '';
+                    var roomListInfo = res.roomConsumerListInfo.listData
+                    for (var i = 0; i < roomListInfo.length; i++) {
+                        var prices = roomListInfo[i].CONSUMER_PRICE.toFixed(2)
+                        box3List +=
+                            '<div class="flex flexBetween mg-t-10 c999">' +
+                            '<div>' + roomListInfo[i].CONSUMER_NAME + '(数量:' + roomListInfo[i].ROOM_CONSUMER_NUMBER +
+                            ')' +
+                            '</div>' +
+                            '<div>￥' + prices + '</div>' +
+                            '</div>';
+                    }
+                    $(".box3 .list1").append(box3List);
+                    if (roomListInfo.length <= 0) {
+                        $(".box3 .list1").hide();
+                    }
+                    // 酒店房间信息
+                    price = listInfo.ROOM_PRICE;
+                    var date = listInfo.HOTEL_REN_DateNumber ? listInfo.ORDER_DATENUMBER + listInfo.HOTEL_REN_DateNumber :
+                        listInfo.ORDER_DATENUMBER;
+                    $(".roomType").text(listInfo.HOTELROOMTYPE_NAME);
+                    $(".roomprice").text("￥" + price.toFixed(2));
+                    $(".price").text(price.toFixed(2));
+                    $(".inDay").text(date + "天")
+                    switch (listInfo.RENTTYPE_ID) {
+                        case '0':
+                            $(".rentType").text("钟点房");
+                            break;
+                        case '1':
+                            $(".rentType").text("限时特惠");
+                            break;
+                        case '2':
+                            $(".rentType").text("普通房");
+                            break;
+                    }
+                    if (getParam().type == "d4") $(".otime").show();
+                    $(".inTime").text(listInfo.inRoomDate);
+                    // $(".sumPrice").text("￥" + (listInfo.sumPrice * date).toFixed(2));
+                    $(".sumPrice").text("￥" + (listInfo.sumPrice).toFixed(2));
+                    $(".depositMsg").text("(含押金￥" + listInfo.HOTEL_ORDER_DEPOSITPRICE.toFixed(2) +
+                        "，离店时可返)")
+                    if (listInfo.HOTEL_ORDER_STATE == 2) $(".returnContent").text("是否确认退房？");
+
+                    var strConsumer = "";
+                    var consumerPrice = 0; // 消耗品价格
+                    var consumerList = res.orderList.listData[0].roomConsumerInfo.listData
+                    console.log(consumerList.length)
+                    if (consumerList && consumerList.length > 0) {
+                        for (var i = 0; i < consumerList.length; i++) {
+                            var prices = (consumerList[i].CONSUMER_PRICE * consumerList[i].number).toFixed(
+                                2)
+                            strConsumer +=
+                                '<div class="flex flexBetween mg-t-10 c999">' +
+                                '<div>' + consumerList[i].CONSUMER_NAME + '*' + consumerList[i].number +
+                                '</div>' +
+                                '<div>￥' + prices + '</div>' +
+                                '</div>';
+                            consumerPrice = (consumerList[i].CONSUMER_PRICE * consumerList[i].number) +
+                                consumerPrice;
+                        }
+                        $(".box5 .list1").append(strConsumer);
+                    } else {
+                        $(".box5 .list1").hide()
+                    }
+
+                    if (roomListInfo.length <= 0) {
+                        $(".box3 .list1").hide();
+                    }
+                    $(".totalPrice").text((consumerPrice + listInfo.sumPrice).toFixed(2));
+                    $(".deposit").text(listInfo.HOTEL_ORDER_DEPOSITPRICE.toFixed(2))
+                    $(".totalCount").text((listInfo.HOTEL_ORDER_DEPOSITPRICE - consumerPrice).toFixed(2));
+                }
+            });
+
+            // if ((getParam().type) != "d2") {
+            //     ajaxPost({
+            //         orderId: getParam().id
+            //     }, "appHostel/queryQrcode", function (res) {
+            //         $("#qrCode").find("img").attr("src",
+            //             "https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/" + res.data).show();
+            //         $(".codeName").text("订单二维码")
+            //         $(".qrCodeLoading").hide()
+            //     });
+            // } else {
+            //     ajaxPost({
+            //         orderId: getParam().id
+            //     }, "appHostel/getRoomKey", function (res) {
+            //         $("#qrCode").find("img").attr("src",
+            //             "https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/" + res.data.QRCODE
+            //         ).show();
+            //         $(".codeName").text("二维码开锁")
+            //         $(".qrCodeLoading").hide()
+            //     });
+            // }
+
+        }
+        getDetail();
+
+        $("#returnOrder").on("click", ".confirm", function () {
+
+            var url, param, msg;
+            if (resData.HOTEL_ORDER_STATE == '2') { // 退房
+                url = 'appHostel/updateHotelOrder';
+                param = {
+                    orderId: resData.ORDERID,
+                    state: 3
+                }
+                msg = "申请成功"
+            } else if (resData.HOTEL_ORDER_STATE == '1') { // 退订
+                param = {
+                    userId: user_token().USER_ID,
+                    roomId: resData.ROOM_ID,
+                    orderId: resData.ORDERID,
+                    orderSubPrice: resData.ROOM_PRICE,
+                    orderDepositPrice: resData.HOTEL_ORDER_DEPOSITPRICE,
+                }
+                if (resData.HOTEL_PAY_TYPE == 1) { // 微信支付退订
+                    url = "appWebchatPay/refund.html";
+                } else if (resData.HOTEL_PAY_TYPE == 3) { // 余额支付退订
+                    url = 'appYuepay/refund';
+                    param.type = 1;
+                }
+                msg = "退订成功"
+            }
+            // console.log(url, param);
+            hideModal("#returnOrder");
+            $(".loading").show();
+            $(".mask").show();
+            ajaxPost(param, url, function (res) {
+                $(".loading").hide();
+                $(".mask").hide();
+                if (res.code == 1) {
+                    dlctipbox.show(msg);
+                    if (resData.HOTEL_ORDER_STATE == '2') {
+                        ajaxPost({
+                            orderId: resData.ORDERID
+                        }, "appHostel/sendTemplate", function (res2) {
+
+                        })
+                    }
+                    setTimeout(() => {
+                        location.href = "o_hotelList.html";
+                    }, 1500);
+                }
+            })
+        });
+
+        $("#renew").on("click", ".confirm", function () {
+
+            var param = {
+                orderId: resData.ORDERID,
+                dayNumber: $(".input").val(),
+                renPrice: $(".input").val() * resData.ROOM_PRICE,
+                body: "酒店订单",
+            }
+
+            hideModal("#renew");
+            $(".loading").show();
+            $(".mask").show();
+            if (resData.HOTEL_PAY_TYPE == 1) {
+                param.openid = user_token().openid;
+                url = "appWebchatPay/hotelRenOrderPay.html";
+                ajaxPost(param, url, function (res) {
+                    $(".loading").hide();
+                    $(".mask").hide();
+                    if (res.code == 1) {
+                        // dlctipbox.show("续租成功");
+                        jsApiParameters = res.data;
+                        callpay();
+                    } else {
+                        dlctipbox.show(res.msg);
+                    }
+                });
+            } else {
+                param.userId = user_token().USER_ID;
+                url = "appYuepay/hotelRenOrder";
+                ajaxPost(param, url, function (res) {
+                    $(".loading").hide();
+                    $(".mask").hide();
+                    if (res.code == 1) {
+                        dlctipbox.show("续租成功");
+                        location.reload();
+                    } else {
+                        dlctipbox.show(res.msg);
+                    }
+                });
+            }
+        })
+    });
+
+    function change(obj, typeStatus, resData) {
+        setData("resDataHotel", $(resData).attr("resData"));
+        setData("typeStatus", typeStatus)
+
+        if (typeStatus == 3) {
+            $(".returnContent").text("是否确认退房？");
+        } else if (typeStatus == 5) {
+            price = JSON.parse($(resData).attr("resData")).HOTEL_ORDER_ROOMPRICE;
+            $(".input").val(0);
+            $(".price").text("0.00");
+        }
+        showModal($(obj));
+    }
+
+    var jsApiParameters = {};
+    var money = getUrlParam('money');
+
+    //调用微信JS api 支付
+
+    function jsApiCall() {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            jsApiParameters,
+            function (res) {
+                // alert(JSON.stringify(res));
+                if (res.err_msg == 'get_brand_wcpay_request:ok') {
+                    dlctipbox.show('支付成功');
+                    location.reload();
+                } else {
+                    dlctipbox.show('支付取消或失败');
+                    location.reload();
+                    off = false;
+                }
+
+            }
+        );
+    }
+
+    function callpay() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        } else {
+            jsApiCall();
+        }
+    }
+
+    function getEndDay(date, day) {
+        var now = date.split('-');
+        var date = new Date(Number(now['0']), (Number(now['1']) - 1), Number(now['2']))
+        var time = date.setDate(date.getDate() + day);
+        if (Date.parse(new Date()) > time) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function showQrCode(type) {
+        $(".loading").show();
+        $(".mask").show();
+        $("#qrCode").find("img").hide()
+        if (type != 1) {
+            ajaxPost({
+                orderId: getParam().id
+            }, "appHostel/queryQrcode", function (res) {
+                $("#qrCode").find("img").attr("src",
+                    "https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/" + res.data).show();
+                $(".qrCodeLoading").hide()
+                $(".loading").hide();
+            });
+            $(".codeName").text("订单二维码")
+        } else {
+            $(".codeName").text("二维码开锁")
+            ajaxPost({
+                orderId: getParam().id
+            }, "appHostel/getRoomKey", function (res) {
+                $("#qrCode").find("img").attr("src",
+                    "https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/" + res.data.QRCODE
+                ).show();
+                $(".qrCodeLoading").hide()
+                $(".loading").hide();
+            });
+        }
+        showModal($("#qrCode"))
+    }
+</script>
+
+</html>

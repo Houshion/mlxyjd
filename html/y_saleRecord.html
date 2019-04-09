@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        消费记录
+    </title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta content="webkit" name="renderer">
+    <meta content="no-siteapp" http-equiv="Cache-Control" />
+    <meta content="yes" name="mobile-web-app-capable" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no,email=no,address=no" name="format-detection" />
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <link href="../css/common.css" rel="stylesheet" />
+    <script src="../js/adaptive.js" type="text/javascript"></script>
+    <script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+        window['adaptive'].baseFont = 28;
+        window['adaptive'].init();
+    </script>
+    <style type="text/css">
+        .banner {
+            height: 2rem;
+            font-size: .72rem;
+            color: #fff;
+            background: linear-gradient(to right, #03f1fe, #4daeff);
+        }
+
+        .type1Box,
+        .type2Box {
+            display: none;
+        }
+
+        .type1Box.on,
+        .type2Box.on {
+            display: block;
+        }
+    </style>
+
+<body>
+    <div class="pos_r">
+        <div class="banner flex yuePrice">
+            0.00
+        </div>
+        <ul>
+            <li class="flex-sb bw p30_20 bdb">
+                <span>订单编号</span>
+                <span class="col9 yueId">
+                    <!-- 23154862 -->
+                </span>
+            </li>
+            <li class="flex-sb bw p30_20 bdb">
+                <span>交易编号</span>
+                <span class="col9 yueNo">
+                    <!-- 4576542113545 -->
+                </span>
+            </li>
+            <li class="flex-sb bw p30_20 bdb">
+                <span>创建时间</span>
+                <span class="col9 createDate">
+                    <!-- 2017-10-10  12:12:54 -->
+                </span>
+            </li>
+            <!-- 酒店消费 -->
+            <div class="type1Box">
+                <li class="flex-sb bw p30_20 bdb">
+                    <ul class="flex flex-column">
+                        <span>酒店名称</span>
+                        <span>详细地址</span>
+                    </ul>
+                    <ul class="flex-column" style="display: flex;">
+                        <span class="col9 tae HOTEL_Name">
+                            <!-- 广州圣丰索菲特大酒店 -->
+                        </span>
+                        <span class="col9 tae address">
+                            <!-- 广东省广州市天河区广州大道中988号 -->
+                        </span>
+                    </ul>
+                </li>
+                <li class="flex-sb bw p30_20">
+                    <span>已消耗品</span>
+                    <!-- <ul>
+                            <span class="col9">浴帽*2</span>
+                            <span class="col9 ml20">矿泉水*2</span>
+                        </ul> -->
+                </li>
+                <li class="flex-sb mt20 bw p30_20 bdb">
+                    <span>房间类型</span>
+                    <ul>
+                        <span class="col9 t1">
+                            <!-- 单人豪华*2 -->
+                        </span>
+                        <span class="col9 ml20 t2">
+                            <!-- ￥150.00 -->
+                        </span>
+                    </ul>
+                </li>
+                <li class="flex-sb bw p30_20 bdb">
+                    <span>租房类型</span>
+                    <span class="col9 roomType">
+                        <!-- 普通房 -->
+                    </span>
+                </li>
+                <li class="flex-sb bw p30_20 bdb">
+                    <span>房间号码</span>
+                    <span class="col9 roomNum">
+                        <!-- 601 -->
+                    </span>
+                </li>
+                <li class="flex-sb bw p30_20 bdb">
+                    <span>入住时间</span>
+                    <span class="col9 inRoomDate">
+                        <!-- 2017-10-10  12:12:54 -->
+                    </span>
+                </li>
+                <li class="flex-sb bw p30_20 bdb">
+                    <span>入住天数</span>
+                    <span class="col9 ORDER_DATENUMBER">
+                        <!-- 2天 -->
+                    </span>
+                </li>
+                <li class="flex-sb bw p30_20 bdb hide rent">
+                    <span>续租天数</span>
+                    <span class="col9 HOTEL_REN_DateNumber">
+                        <!-- 2天 -->
+                    </span>
+                </li>
+                <li class="flex-sb bw p30_20 bdb">
+                    <span>实付金额</span>
+                    <span class="col9 payMoney">（
+                        <!-- 含押金￥100.00.离店时可返） -->
+                    </span>
+                </li>
+            </div>
+            <!-- 微商城消费 -->
+            <div class="type2Box mt20">
+                <div class="bw p30_20">
+                    <p>微商城订单消费</p>
+                    <ul class="shopBox">
+                        <!--      <li class="flex-sb col9 mt10 sList">
+                                <span>可乐鸡翅*1</span>
+                                <span>￥80.00*1</span>
+                            </li> -->
+                        <!--   <li class="flex-sb col9 mt10">
+                                <span>意大利面*1</span>
+                                <span>￥180.00*1</span>
+                            </li> -->
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </div>
+</body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+<!--快速点击-->
+<script src="../js/dlc.js" type="text/javascript" charset="utf-8"></script>
+<!--公司的常用函数封装-->
+<script>
+    if (getUrlParam('state') == 0) { //酒店订单
+        $('.type2Box').addClass('on');
+    } else if (getUrlParam('state') == 1) { //商城订单
+        $('.type1Box').addClass('on');
+    }
+    if ($('.type1Box').hasClass('on')) {
+        $('.banner').css('background', 'linear-gradient(to right, #03f1fe, #4daeff)');
+    } else if ($('.type2Box').hasClass('on')) {
+        $('.banner').css('background', 'linear-gradient(to right, #4ce6f0, #01bfc1)');
+    } else {
+        $('.banner').css('background', 'linear-gradient(to right, #71c5ff, #448aff)');
+        $('title').text('充值记录')
+    }
+    dlc_request('appHostel/listOrderYue', {
+        userId: user_token().USER_ID,
+        orderId: getParam().id,
+        orderType: getParam().state,
+        pageSize: '',
+        currentPage: ''
+    }, function (res) {
+        console.log(res);
+        if (res.code == 1) {
+            $('.yueId').text(getParam().id);
+            getParam().number == "undefined" ? $('.yueNo').parent().hide() : '';
+            $('.yueNo').text(getParam().state == 0 ? res.yueOrderInfo.listData[0].GOODS_ORDER_NO : (getParam().number ==
+                "undefined" ? '' : getParam().number));
+            $('.createDate').text(getParam().state == 1 ? res.yueOrderInfo.listData[0].createOrderDate :
+                getParam().state == 2 ? res.yueOrderInfo.listData[0].createDate : res.yueOrderInfo.listData[
+                    0].createDate);
+            // $('.createDate').text(res.yueOrderInfo.listData[0].createDate);
+            $('.yuePrice').text((getParam().state == 2 ? '+' : '-') + (getParam().state == 1 ? res.yueOrderInfo
+                .listData[0].sumPrice : getParam().state == 2 ? Number(res.yueOrderInfo.listData[0].yuePrice)
+                .toFixed(2) : Number(res.yueOrderInfo.listData[0].GOODS_ORDER_PRICE).toFixed(2)));
+            $('.HOTEL_Name').text(res.yueOrderInfo.listData[0].HOTEL_Name);
+            if (getParam().state == 1) { //酒店订单
+                var totalDay = res.yueOrderInfo.listData[0].ORDER_DATENUMBER;
+                $('.address').text(res.yueOrderInfo.listData[0].address);
+                $('.inRoomDate').text(res.yueOrderInfo.listData[0].inRoomDate)
+                $('.roomType').text(res.yueOrderInfo.listData[0].content.split('/')[0])
+                $('.roomNum').text(res.yueOrderInfo.listData[0].content.split('/')[1])
+                $('.ORDER_DATENUMBER').text(totalDay + '天')
+                $('.payMoney').text('￥' + res.yueOrderInfo.listData[0].sumPrice.toFixed(2) + '(含押金￥' + res.yueOrderInfo
+                    .listData[0].HOTEL_ORDER_DEPOSITPRICE.toFixed(2) +
+                    '.离店时可返)');
+                if (res.yueOrderInfo.listData[0].HOTEL_REN_DateNumber) {
+                    totalDay = res.yueOrderInfo.listData[0].ORDER_DATENUMBER + res.yueOrderInfo.listData[0].HOTEL_REN_DateNumber;
+                    $(".HOTEL_REN_DateNumber").text(res.yueOrderInfo.listData[0].HOTEL_REN_DateNumber + '天').show()
+                } else {
+                    $(".rent").hide()
+                }
+                $('.t1').text(res.yueOrderInfo.listData[0].content.split('/')[0] + '*' + totalDay)
+                $('.t2').text('￥' + (res.yueOrderInfo.listData[0].HOTEL_ORDER_ROOMPRICE / totalDay).toFixed(2))
+
+            } else if (getParam().state == 0) { //商品订单
+                var str = '';
+                var list = res.yueOrderInfo.listData;
+                list.forEach((item, index) => {
+                    str += '<li class="flex-sb col9 mt10 sList"> <span>' + item.GOODS_NAME + '*' + item
+                        .orderNumber + '</span> <span>￥' + item.orderPrice + '</span></li>'
+                })
+                console.log(str)
+                $('.shopBox').html(str);
+            } else if (getParam().state == 3) {
+                $("title").text(res.yueOrderInfo.listData[0].content);
+                $(".createDate").text(res.yueOrderInfo.listData[0].yueCreateDate);
+                $(".yuePrice").text("+" + res.yueOrderInfo.listData[0].yuePrice.toFixed(2))
+            }
+        } else {
+            dlctipbox.show(res.msg);
+        }
+    })
+    // if (getParam().state == 0) { //酒店订单
+    //     dlc_request('appHostel/listOrderHotel', { userId: user_token().USER_ID, orderId: getParam().id, state: getParam().state, pageSize: '', currentPage: '' }, function(res) {
+    //         console.log(res);
+    //         if (res.code == 1) {
+    //             $('.sumPrice').text((getParam().state == 2 ? '+' : '-') + res.yueOrderInfo.listData[0].yuePrice + '.00');
+    //             $('.createDate').text(res.yueOrderInfo.listData[0].createDate);
+    //             $('.yueId').text(res.yueOrderInfo.listData[0].yueId);
+    //             $('.yueNo').text(res.yueOrderInfo.listData[0].yueNo);
+    //         } else {
+    //             dlctipbox.show(res.msg);
+    //         }
+    //     })
+    // } else if (getParam().state == 1) { //商城订单
+    //     dlc_request('appHostel/listOrderShop', { userId: user_token().USER_ID, orderId: getParam().id, state: getParam().state, pageSize: '', currentPage: '' }, function(res) {
+    //         console.log(res);
+    //         if (res.code == 1) {
+    //             $('.sumPrice').text((getParam().state == 2 ? '+' : '-') + res.yueOrderInfo.listData[0].yuePrice + '.00');
+    //             $('.createDate').text(res.yueOrderInfo.listData[0].createDate);
+    //             $('.yueId').text(res.yueOrderInfo.listData[0].yueId);
+    //             $('.yueNo').text(res.yueOrderInfo.listData[0].yueNo);
+    //         } else {
+    //             dlctipbox.show(res.msg);
+    //         }
+    //     })
+
+    // } else { //充值
+    //     dlc_request('appHostel/listOrderYue', { userId: user_token().USER_ID, orderId: getParam().id, orderType: getParam().state, pageSize: '', currentPage: '' }, function(res) {
+    //         console.log(res);
+    //         if (res.code == 1) {
+    //             $('.yuePrice').text((getParam().state == 2 ? '+' : '-') + res.yueOrderInfo.listData[0].yuePrice + '.00');
+    //             $('.createDate').text(res.yueOrderInfo.listData[0].createDate);
+    //             $('.yueId').text(res.yueOrderInfo.listData[0].yueId);
+    //             $('.yueNo').text(res.yueOrderInfo.listData[0].yueNo);
+    //         } else {
+    //             dlctipbox.show(res.msg);
+    //         }
+    //     })
+    // }
+</script>

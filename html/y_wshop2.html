@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>微商城</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+    window['adaptive'].desinWidth = 750;
+    window['adaptive'].baseFont = 28;
+    window['adaptive'].init();
+    </script>
+    <style type="text/css">
+    .searchBox {
+        height: 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    #search {
+        width: 80%;
+        padding-left: .5rem;
+        padding-bottom: .2rem;
+        background: url(../img/search.png) no-repeat;
+        -webkit-background-size: .28rem .28rem;
+        background-size: .28rem .28rem;
+    }
+
+
+    .lBox {
+        width: 2rem;
+        height: 11rem;
+        position: fixed;
+        border-right: 1px solid #e8e8e8;
+    }
+
+    .rBox {
+        margin-left: 2rem;
+    }
+
+    .lBox li {
+        height: 1rem;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    .lBox li.active {
+        color: #fff;
+        background: linear-gradient(to right, #6c8eda, #4bc0ed);
+    }
+
+    .bottom {
+        height: 1rem;
+        border-top: 1px solid #e8e8e8;
+    }
+
+    .c_box {
+        margin-left: 1.2rem;
+    }
+
+    .wh {
+        width: 0.68rem;
+        height: 0.68rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #e5e5e5;
+    }
+
+    .minus {
+        border-right: none;
+        border-radius: 6px 0 0 6px;
+    }
+
+    .add {
+        border-left: none;
+        border-radius: 0 6px 6px 0;
+    }
+
+    b {
+        font-weight: normal;
+    }
+
+    #pay {
+        width: 2rem;
+        height: 1rem;
+        background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        color: #fff;
+    }
+
+    .tip {
+        position: absolute;
+        width: 0.3rem;
+        height: 0.31rem;
+        background: #ff6a6a;
+        color: #fff;
+        font-size: 0.24rem;
+        top: -0.1rem;
+        left: 100%;
+        border-radius: 1rem;
+    }
+    </style>
+
+    <body>
+        <div class="bigBox">
+            <ul class="container">
+                <div class="bw searchBox flex">
+                    <input class="bdb" type="text" name="search" id="search" placeholder="请输入关键字搜索">
+                </div>
+                <div class="mt20 mBox" style="display:flex;margin-top: 1.2rem;overflow: hidden;">
+                    <div class="lBox bw">
+                        <!--            <li class="flex active">餐食</li>
+                        <li class="flex">水果</li>
+                        <li class="flex">保健品</li> -->
+                    </div>
+                    <div class="rBox w100">
+                        <!--       <div class="list flex_a bw p20 bdb">
+                            <img class="img" src="../img/goods.png" style="width:1.7rem;height:1.5rem;" />
+                            <ul class="ml20">
+                                <a href="y_shopDetail.html">可乐鸡翅</a>
+                                <p class="color1 mt10 font16">￥<span class="price">80</span>.00</p>
+                                <div class="flex c_box">
+                                    <label class="wh minus">
+                                        <button class="font18">&minus;</button>
+                                    </label>
+                                    <input class="font18 wh tac num" type="number" name="" value="0" />
+                                    <label class="wh add">
+                                        <button class="font18">+</button>
+                                    </label>
+                                </div>
+                            </ul>
+                        </div> -->
+                    </div>
+                </div>
+            </ul>
+            <div class="bw flex">
+                <div class="flex1 flex-sb plr24">
+                    <p style="position: relative;" id="gwc"><img src="../img/shopcar.png" alt="" style="width: .44rem;height:.44rem;" id="car"><b class="tip tac">0</b></p>
+                    <span class="col9">合计：<b class="col_price font17 color1">￥0.00</b></span>
+                </div>
+                <span id="pay" class="flex font16">去结算</span>
+            </div>
+            <!-- <div class="bottom flex-sb bw">
+                <ul class="flex-sb">
+                    <img src="../img/shopcar.png" style="width:.44rem;height:.44rem;" />
+                </ul>
+            </div> -->
+        </div>
+    </body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script type="text/javascript">
+var total = [];
+var obj = {};
+var hostelId = '';
+dlc_request('appHotelShop/hotelId', {}, function(res) {
+    if (res.code == 1) {
+        hostelId = res.hostelId.HOTEL_ID;
+        //分类信息
+        dlc_request('appHotelShop/shopType', {
+            hotelId: hostelId
+        }, function(res) {
+            console.log(res);
+            if (res.code == 1) {
+                var list = res.hostelList.listData;
+                var str = '';
+                var status = false;
+                list.forEach((item, index) => {
+                    str += '<li class="flex ' + (index == 0 ? 'active' : '') + '" data-id=' + item.GOODS_TYPE_ID + '>' + item.GOODS_TYPE_NAME + '</li>'
+                })
+                $('.lBox').append(str);
+            } else {
+                dlctipbox.show(res.msg);
+            }
+        })
+    } else {
+        dlctipbox.show(res.msg);
+    }
+})
+//添加购物车
+var tip = $('.tip').text() * 1;
+$('.bigBox').on('click', '.add', function() {
+    if ($(this).parents().is('.container')) {
+        shoppingCartAnimate($(this).parents('.list').find('.img'), $('#car'));
+    }
+    console.log($(this));
+    totals(this, 1);
+})
+
+//减少购物车
+$('.bigBox').on('click', '.minus', function() {
+    totals(this, 2);
+})
+
+function totals(_this, type) {
+    var initial_sum = $('.col_price ').text().split('￥')[1] * 1; //获取总金额初始值
+    var single_num = $(_this).parents('.list').find('.num').data('price'); //单价
+    var stock = $(_this).parents('.list').find('.num').data('track'); //库存
+    var goods_id = $(_this).parents('.list').data('id');
+    var numbers = $(_this).parents('.list').find('.num').val() * 1; //单个的input数量
+    if (type == 1) { //加
+        if (numbers < stock) { //判断是否超出库存
+            numbers = numbers + 1;
+            var sum = initial_sum + single_num; //总价
+            tip++;
+        } else {
+            dlctipbox.show('已经超出库存~');
+            return false;
+        };
+        // console.log($(_this).parents('.list').find('.num').val())
+        $(_this).prevAll('input').val(numbers); //input的数值赋值
+        if ($(_this).parents().is('.container')) { //列表部分加入飞入购物车的特效
+            shoppingCartAnimate($(_this).parents('.list').find('.img'), $('#car'));
+        }
+    } else { //减
+        if (numbers > 0) { //大于0的时候才执行
+            tip--;
+            numbers = numbers - 1;
+            var sum = initial_sum - single_num;
+            $(_this).parents('.list').find('.num').val(numbers);
+            // console.log($(_this).parents('.list').find('.num').val())
+            if ($(_this).parents().is('.shopCar')) { //列表部分加入飞入购物车的特效
+                numbers == 0 ? $(_this).parents('.list').css('display', 'none') : '';
+            }
+        } else {
+            // 如果数值小于0，删除整行
+            numbers = 0;
+            tip = 0;
+            sum = 0;
+            return false;
+        }
+    }
+    if (numbers < 0) { numbers = 0; return false; }
+    if (tip < 0) { tip = 0; return false; }
+    if (sum < 0) { sum = 0; return false; }
+    $('.tip').text(tip); //购物车的数量
+    $('.col_price').text('￥' + sum + '.00'); //总价之和
+}
+</script>

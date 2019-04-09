@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-
+scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../css/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+    window['adaptive'].desinWidth = 750;
+    window['adaptive'].baseFont = 28;
+    window['adaptive'].init();
+    </script>
+    <style>
+    .top {
+        height: 3.2rem;
+        background-size: cover;
+    }
+
+    .banner {
+        position: relative;
+        height: 4.5rem;
+    }
+
+    .bg_img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .a_innerbox {
+        position: absolute;
+        left: calc(50% - 25%);
+        top: calc(50% - 25%);
+        width: 50%;
+        height: 50%;
+        text-align: center;
+    }
+
+    .flex-column {
+        flex-direction: column;
+    }
+
+    .filter {
+        -webkit-filter: blur(0.04rem);
+        -moz-filter: blur(0.04rem);
+        -o-filter: blur(0.04rem);
+        -ms-filter: blur(0.04rem);
+        filter: blur(0.04rem);
+    }
+
+    .menu-icon {
+        height: 0.18rem;
+        width: auto;
+    }
+
+    .avatar_person {
+        width: 1.82rem;
+        height: 1.82rem;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    </style>
+</head>
+
+<body>
+    <!-- banner -->
+    <div class="banner w100" style="overflow: hidden;">
+        <!--           <a class="flex-center p4 br-circle info_btn">
+            <img class="filter bg_img avatar head_img" src="../img/bg1.png"/>
+        <div class="a_innerbox flex flex-column">
+              <img src="../img/user.png" alt="" class="avatar avatar_person br-circle head_img">
+            <span class="nickname colw mt20">小云</span>
+        </div>
+         </a> -->
+    </div>
+    <!-- 列表详情 -->
+    <ul class="mt20">
+        <a href="y_wallet.html" class="flex_a flex-sb bdb bw p30">
+            <ul>
+                <img src="../img/y_5.png" style="width:.32rem;height:.32rem;" />
+                <span class="ml20">我的钱包</span>
+            </ul>
+            <img src="../img/y_arrow_right.png" style="width:.12rem;height:.2rem;" />
+        </a>
+        <a href="y_address.html" class="flex_a flex-sb bdb bw p30">
+            <ul>
+                <img src="../img/y_6.png" style="width:.32rem;" />
+                <span class="ml20">地址管理</span>
+            </ul>
+            <img src="../img/y_arrow_right.png" style="width:.12rem;height:.2rem;" />
+        </a>
+        <a class="flex_a flex-sb bdb bw p30" id="dataFile" href="o_hotelList.html">
+            <ul>
+                <img src="../img/y_7.png" style="width:.32rem;height:.32rem;" />
+                <span class="ml20">酒店订单</span>
+            </ul>
+            <img src="../img/y_arrow_right.png" style="width:.12rem;height:.2rem;" />
+        </a>
+        <a class="flex_a flex-sb bdb bw p30" href="o_orderList.html">
+            <ul>
+                <img src="../img/y_8.png" style="width:.32rem;height:.32rem;" />
+                <span class="ml20">商品订单</span>
+            </ul>
+            <img src="../img/y_arrow_right.png" style="width:.12rem;height:.2rem;" />
+        </a>
+    </ul>
+</body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/dlc.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.0/alipayjsapi.inc.min.js"></script>
+<!--公司的常用函数封装-->
+<script>
+isLogin(function(res) {
+    console.log(res);
+    if (res.flag == 1) { //登录成功
+        dlc_request('appuser/findUser', {
+            userId: user_token().USER_ID
+        }, function(res) {
+            console.log(res);
+            if (res.code == 1) { //登录成功
+                var img = JSON.stringify(res.appUser.image);
+                console.log(img)
+                console.log(img.substr(0, 5))
+                $('.banner').append(' <a class="flex-center p4 br-circle" href="y_info.html"> ' +
+                    '<img class="filter bg_img avatar head_img" src="' + ((img.indexOf('http') != -1) ? res.appUser.image : 'https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/' + res.appUser.image) + '">' +
+                    '<div class="a_innerbox flex flex-column">' +
+                    ' <img src="' + ((img.indexOf('http') != -1) ? res.appUser.image : 'https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/' + res.appUser.image) + '" alt="" class="avatar avatar_person br-circle head_img">' +
+                    '<span class="nickname colw mt20">' + res.appUser.USERNAME + '</span>' +
+                    '</div>' +
+                    '</a>')
+            } else {
+                dlctipbox.show(res.msg);
+            }
+        });
+    } else {
+        dlctipbox.show(res.msg);
+    }
+});
+addEventback();
+</script>

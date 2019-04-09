@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>详情</title>
+</head>
+
+<body>
+    <div class="recoverDetail">
+        <div class="box1 bfff flex pd-10 mg-b-10">
+            <div class="ta-left wd-50 flex lh32">
+                <div class="icon bblue">!</div>
+                <div>已收房</div>
+            </div>
+        </div>
+        <div class="box2 bfff pd-l-10 mg-b-10">
+            <div class="list flex flexBetween border-b">
+                <div>房间类型</div>
+                <div class="c999 roomType"></div>
+            </div>
+            <div class="list flex flexBetween border-b">
+                <div>房间号码</div>
+                <div class="c999 roomNum"></div>
+            </div>
+            <div class="list flex flexBetween border-b">
+                <div>所属楼层</div>
+                <div class="c999 roomFloor"></div>
+            </div>
+            <div class="list flex flexBetween border-b">
+                <div>客户名称</div>
+                <div class="c999 Name"></div>
+            </div>
+            <div class="list flex flexBetween border-b">
+                <div>收房确认时间</div>
+                <div class="c999 time"></div>
+            </div>
+        </div>
+        <div class="box3 bfff check pd-10 mg-b-10">
+            <div class="title">房内消耗品使用情况</div>
+
+        </div>
+        <div class="box4 bfff pd-10 mg-b-10">
+            <div class="mgtb-10">其他说明</div>
+            <div class="message"></div>
+        </div>
+    </div>
+</body>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/o_base.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    $(function () {
+
+        var resData = JSON.parse(getData("recoveryData"));
+        var str = '';
+        var consumer;
+
+        $(".roomType").text(resData.HOTELROOMTYPE_NAME);
+        $(".roomNum").text(resData.ROOM_NAME);
+        $(".roomFloor").text(resData.FLOOR_NAME);
+        $(".Name").text(resData.USERNAME);
+        $(".time").text(resData.recoveryDate);
+        $(".message").text(resData.HOTEL_ORDER_RECOVERYCONTENT);
+        consumer = resData.roomConsumerInfo;
+        // if(consumer.listData)
+        for (var i = 0; i < consumer.listData.length; i++) {
+            str +=
+                '<div class="waresList flex mg-t-10 c999">' +
+                '<span>'+consumer.listData[i].CONSUMER_NAME+'</span>*<span>'+consumer.listData[i].number+'</span>' +
+                '</div>'
+        }
+        $(".box3").append(str);
+        if(consumer.listData.length <= 0){
+            $(".box3").hide();
+        }
+    });
+</script>
+
+</html>

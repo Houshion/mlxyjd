@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>酒店订单</title>
+    <style>
+        #pay .btn1,
+        #renew .btn1,
+        #returnOrder .btn1 {
+            border-bottom-right-radius: 10px
+        }
+
+        .navList .nav {
+            width: 25%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navList flex fixed_top">
+        <div class="nav">
+            <div class="navbtn pick" data-type="99">全部</div>
+        </div>
+        <div class="nav">
+            <div class="navbtn" data-type="1">已预订</div>
+        </div>
+        <div class="nav">
+            <div class="navbtn" data-type="2">已入住</div>
+        </div>
+        <div class="nav">
+            <div class="navbtn" data-type="4">已完成</div>
+        </div>
+    </div>
+    <div class="list mg-t-50">
+
+    </div>
+    <!-- 遮罩层 -->
+    <div class="mask hide"></div>
+    <!-- 隐藏框 -->
+    <div class="wd-60 bfff hide maskBox radius10" id="pay">
+        <div class="pd-15">
+            <div class="ta-center">
+                <img src="../img/o_return.png" class="wd-40 mg-10">
+                <div class="returnContent">是否前往付款？</div>
+            </div>
+        </div>
+        <div class="border-t flex">
+            <div class="box wd-50 pd-15 border-r colbbb" onclick="hideModal($('#pay'))">取消</div>
+            <div class="box wd-50 pd-15 btn1 confirm">确认</div>
+        </div>
+    </div>
+    <div class="wd-60 bfff hide maskBox radius10" id="returnOrder">
+        <div class="pd-15">
+            <div class="ta-center">
+                <img src="../img/o_return.png" class="wd-40 mg-10">
+                <div class="returnContent">是否确认退订？</div>
+            </div>
+        </div>
+        <div class="border-t flex">
+            <div class="box wd-50 pd-15 border-r colbbb" onclick="hideModal($('#returnOrder'))">取消</div>
+            <div class="box wd-50 pd-15 btn1 confirm">确认</div>
+        </div>
+    </div>
+    <div class="wd-60 bfff hide maskBox radius10" id="renew">
+        <div class="pd-15">
+            <div class="pd-t-15 pd-b-15">
+                <div>续约天数：</div>
+                <div class="flex mgtb-10 fontb">
+                    <div class="wd-15 reducebtn box">-</div>
+                    <div class="wd-70">
+                        <input type="number" class="input ta-center" value="0" readonly>
+                    </div>
+                    <div class="wd-15 plusbtn box">+</div>
+                </div>
+            </div>
+            <div>
+                金额：
+                <span class="cred">￥
+                    <span class="price">0.00</span>
+                </span>
+            </div>
+        </div>
+        <div class="border-t flex">
+            <div class="box wd-50 pd-15 border-r colbbb" onclick="hideModal($('#renew'))">取消</div>
+            <div class="box wd-50 pd-15 btn1 confirm">确认</div>
+        </div>
+    </div>
+</body>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/o_base.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    var typeStatus, //订单要修改的状态
+        resData, //接口返回数据
+        price; //单价
+
+    $(function () {
+
+        var type = "99"; //默认查看全部
+
+        $(".navbtn").on("click", function () {
+            var _this = $(this);
+            $(".navbtn").removeClass("pick");
+            if (!_this.hasClass("pick")) {
+                _this.addClass("pick");
+                type = _this.data("type");
+            }
+            getList();
+        });
+
+        /****** 续租 ******/
+        $("#renew").on("click", ".plusbtn", function () {
+            var number = $("#renew input.input");
+            number.val(parseInt(number.val()) + 1);
+            // 计算价格
+            count("renew", number.val())
+        });
+
+        $("#renew").on("click", ".reducebtn", function () {
+            var number = $("#renew input.input");
+            var val = parseInt(number.val());
+            if (val > 1) {
+                number.val(val - 1);
+            }
+            // 计算价格
+            count("renew", number.val())
+        });
+
+        function count(obj, val) {
+            switch (obj) {
+                case "addMore":
+                    val = val * 20;
+                    $("#addMore .price").text(val.toFixed(2))
+                    break;
+                case "renew":
+                    val = val * price;
+                    $("#renew .price").text(val.toFixed(2))
+                    break;
+            }
+        }
+
+        function getList() {
+            // 获取列表数据
+            var param = {
+                userId: user_token().USER_ID, // 用户ID
+                orderId: "",
+                pageSize: 50, // 每页的条数
+                currentPage: 1, // 第几页
+                state: 99
+            }
+            if (type != "99") {
+                param.state = type;
+            }
+            ajaxPost(param, "appHostel/listOrderHotel", function (res) {
+                if (res.code == 1) {
+                    var list = res.orderList.listData;
+                    var str = "";
+                    var hType, color, status, btn, img;
+                    // alert(JSON.stringify(list))
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].HOTEL_ORDER_STATE != 0) {
+                            if (list[i].HOTEL_ORDER_STATE == 1) {
+                                hType = "d1";
+                                color = "cyellow";
+                                status = "已预订";
+                                btn = '<div class="statusBtn">' +
+                                    '<div class="pd-10">' +
+                                    '<div class="btn btn1 fr mg-l-10" resData=\'' + JSON.stringify(
+                                        list[i]) +
+                                    '\' onclick="change(\'#returnOrder\',6,this)">退订</div>' +
+                                    '<div class="clear"></div>' +
+                                    '</div>' +
+                                    '</div>'
+                            } else if (list[i].HOTEL_ORDER_STATE == 2) {
+                                hType = "d2";
+                                color = "cblue";
+                                status = "已入住";
+                                btn = '<div class="statusBtn">' +
+                                    '<div class="pd-10">' +
+                                    '<div class="btn btn1 fr mg-l-10" resData=\'' + JSON.stringify(
+                                        list[i]) +
+                                    '\' onclick="change(\'#renew\',5,this)">续约</div>' +
+                                    '<div class="btn btn2 fr mg-l-10" resData=\'' + JSON.stringify(
+                                        list[i]) +
+                                    '\' onclick="change(\'#returnOrder\',3,this)">退房</div>' +
+                                    '<div class="clear"></div>' +
+                                    '</div>' +
+                                    '</div>'
+                            } else if (list[i].HOTEL_ORDER_STATE == 3) {
+                                hType = "d3";
+                                color = "cyellow";
+                                status = "退房中";
+                                btn = '';
+                            } else if (list[i].HOTEL_ORDER_STATE == 4) {
+                                hType = "d4";
+                                color = "cgreen";
+                                status = "已完成";
+                                btn = '';
+                            }
+                            // else if (list[i].HOTEL_ORDER_STATE == 0) {
+                            //     hType = "d0";
+                            //     color = "cred";
+                            //     status = "未付款";
+                            //     btn = '<div class="statusBtn">' +
+                            //         '<div class="pd-10">' +
+                            //         '<div class="btn btn1 fr mg-l-10" resData=\'' + JSON.stringify(
+                            //             list[i]) +
+                            //         '\' onclick="change(\'#pay\',1,this)">付款</div>' +
+                            //         '<div class="clear"></div>' +
+                            //         '</div>' +
+                            //         '</div>'
+                            // }
+                            if (list[i].HOTEL_ORDER_STATE <= 4) {
+                                img = list[i].HOTELROOMTYPE_IMAGE.split(",")[0];
+                                str +=
+                                    '<div class="listBox mg-b-10 bfff">' +
+                                    '<div class="listTitle pd-10 c999" onclick="goTo(\'o_hotelList_Detail.html\',\'type=' +
+                                    hType + '&id=' + list[i].ORDERID + '\')">' +
+                                    '<div class="fl">' + list[i].ORDERID + '</div>' +
+                                    '<div class="fr ' + color + '">' + status + '</div>' +
+                                    '<div class="clear"></div>' +
+                                    '</div>' +
+                                    '<div class="content flex border-b border-t" onclick="goTo(\'o_hotelList_Detail.html\',\'type=' +
+                                    hType + '&id=' + list[i].ORDERID + '\')">' +
+                                    '<div class="wd-30">' +
+                                    '<img src="https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/' +
+                                    img + '" class="wd-100">' +
+                                    '</div>' +
+                                    '<div class="wd-70 box pd-10">' +
+                                    '<div class="wd-100 font16 lh24 flex flexWrap flexACenter">' +
+                                    '<div class="flex">' +
+                                    '<div class="box">' +
+                                    '<img src="../img/o_hotel.png" class="wd-50">' +
+                                    '</div>' + list[i].HOTEL_Name + list[i].content.split("/")[1] +
+                                    '</div>' +
+                                    '<div class="c999 font14 flex">' +
+                                    '<div class="box">' +
+                                    '<img src="../img/o_timer.png" class="wd-50">' +
+                                    '</div>入住时间：' + list[i].inRoomDate + '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' + btn + '</div>'
+                            }
+                        }
+
+                    }
+                    $(".list").html(str);
+                    if (str == '') {
+                        $(".list").html("<div class='ta-center'>...暂无数据...</div>");
+                    }
+                    // console.log(str)
+                } else {
+                    $(".list").html("<div class='ta-center'>...暂无数据...</div>");
+                }
+            });
+        }
+        getList();
+
+        $("#returnOrder").on("click", ".confirm", function () {
+            var url, param, msg;
+            typeStatus = getData("typeStatus");
+            resData = JSON.parse(getData("resDataHotel"));
+            if (typeStatus == '3') { // 退房
+                url = 'appHostel/updateHotelOrder';
+                param = {
+                    orderId: resData.ORDERID,
+                    state: typeStatus
+                }
+                msg = "退房成功"
+            } else if (typeStatus == '6') { // 退订
+                if (resData.HOTEL_PAY_TYPE == 1) { // 微信支付退订
+                    url = "appWebchatPay/refund.html";
+                } else if (resData.HOTEL_PAY_TYPE == 3) { // 余额支付退订
+                    url = 'appYuepay/refund';
+                }
+                param = {
+                    userId: user_token().USER_ID,
+                    roomId: resData.ROOM_ID,
+                    orderId: resData.ORDERID,
+                    orderSubPrice: resData.sumPrice,
+                    orderDepositPrice: resData.HOTEL_ORDER_DEPOSITPRICE,
+                }
+                msg = "退订成功"
+            }
+            // console.log(url, param);
+            ajaxPost(param, url, function (res) {
+                if (res.code == 1) {
+                    dlctipbox.show(msg);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                }
+            })
+        });
+
+        $("#renew").on("click", ".confirm", function () {
+            resData = JSON.parse(getData("resDataHotel"));
+            var param = {
+                orderId: resData.ORDERID,
+                dayNumber: $(".input").val(),
+                renPrice: $(".input").val() * resData.ROOM_PRICE,
+                body: "酒店订单",
+            }
+            if (resData.HOTEL_PAY_TYPE == 1) {
+                param.openid = user_token().openid;
+                url = "appWebchatPay/hotelRenOrderPay.html";
+                ajaxPost(param, url, function (res) {
+                    if (res.code == 1) {
+                        // dlctipbox.show("续租成功");
+                        jsApiParameters = res.data;
+                        callpay();
+                    }
+                });
+            } else {
+                param.userId = user_token().USER_ID;
+                url = "appYuepay/hotelRenOrder";
+                ajaxPost(param, url, function (res) {
+                    if (res.code == 1) {
+                        dlctipbox.show("续租成功");
+                        hideModal("#renew");
+                    }
+                });
+            }
+        })
+
+        $("#pay").on("click", ".confirm", function () {
+            resData = JSON.parse(getData("resDataHotel"));
+            console.log(resData.HOTEL_ORDER_CONTENT)
+            jsApiParameters = resData.HOTEL_ORDER_CONTENT
+            callpay();
+
+            // ajaxPost({
+            //     orderId: resData.ORDERID
+            // }, "appHostel/queryWxPayDetail", function (res) {
+            //     loadingHide();
+            //     console.log(res)
+            //     jsApiParameters = {
+            //         appId: res.wxpaydetail.appId,
+            //         timeStamp: res.wxpaydetail.timeStamp,
+            //         nonceStr: res.wxpaydetail.nonceStr,
+            //         package: res.wxpaydetail.package,
+            //         paySign: res.wxpaydetail.paySign,
+            //         signtTpe: res.wxpaydetail.signtTpe,
+            //     };
+
+            // });
+
+            var param = {
+                roomId: resData.ROOM_ID,
+                time: resData.inRoomDate,
+                num: resData.ORDER_DATENUMBER,
+                money: resData.sumPrice,
+                deposit: resData.HOTEL_ORDER_DEPOSITPRICE,
+                typeId: resData.RENTTYPE_ID,
+            }
+            console.log(param)
+            setData("hotelArr", param)
+            location.href = "./y_pay.html?sum=" + resData.sumPrice + "&deposit=" + resData.HOTEL_ORDER_DEPOSITPRICE +
+                "&type=3"
+        })
+    });
+
+    function change(obj, typeStatus, resData) {
+        setData("resDataHotel", $(resData).attr("resData"));
+        setData("typeStatus", typeStatus)
+
+        if (typeStatus == 3) {
+            $(".returnContent").text("是否确认退房？");
+        } else if (typeStatus == 5) {
+            price = JSON.parse($(resData).attr("resData")).ROOM_PRICE;
+            $(".input").val(0);
+            $(".price").text("0.00");
+        }
+        showModal($(obj));
+    }
+
+    var jsApiParameters = {};
+    var money = getUrlParam('money');
+
+    //调用微信JS api 支付
+
+    function jsApiCall() {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            jsApiParameters,
+            function (res) {
+                // alert(JSON.stringify(res));
+                WeixinJSBridge.log(res.err_msg);
+                if (res.err_msg == 'get_brand_wcpay_request:ok') {
+                    dlctipbox.show('支付成功');
+                    location.reload();
+                } else {
+                    dlctipbox.show('支付取消或失败');
+                    off = false;
+                }
+                $(".maskBox").hide();
+            }
+        );
+    }
+
+    function callpay() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        } else {
+            // alert(JSON.stringify(jsApiParameters));
+            jsApiCall();
+        }
+    }
+</script>
+
+</html>

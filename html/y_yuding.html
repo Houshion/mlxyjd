@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>预定</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/mobiscroll.custom-3.0.0-beta6.min.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+        window['adaptive'].baseFont = 28;
+        window['adaptive'].init();
+    </script>
+    <style type="text/css">
+        .y_type span {
+            border-radius: .1rem;
+            padding: .1rem .2rem;
+            margin-top: .2rem;
+        }
+
+        .y_type span.active {
+            color: #fff;
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        }
+
+        .wh {
+            width: 0.68rem;
+            height: 0.68rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .day {
+            border: 1px solid #ddd;
+            border-radius: .1rem;
+        }
+
+        .wh:nth-child(2) {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .pay {
+            color: #fff;
+            width: 2.2rem;
+            height: 1rem;
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        }
+
+        /*选择房间型号弹出层*/
+
+        .chose_num_hover {
+            width: 6rem;
+            background: #fff;
+            border-radius: .1rem;
+        }
+
+        .chose_num_hover ul {
+            flex-wrap: wrap;
+            padding: 0 .4rem;
+        }
+
+        .chose_num_hover .chose_fh span {
+            width: 1.4rem;
+            height: .6rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: .1rem;
+            margin-top: .3rem;
+            background: #ddd;
+        }
+
+        .chose_num_hover .chose_fh span.active {
+            color: #fff;
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        }
+
+        .chose_num_hover .chose_fh span:nth-of-type(3n+2) {
+            margin-right: .5rem;
+            margin-left: .5rem;
+        }
+
+        .confirm em {
+            width: 50%;
+            height: 1rem;
+        }
+
+        .confirm_btn {
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+            color: #fff;
+        }
+
+        .hide {
+            display: none
+        }
+    </style>
+
+    <body>
+        <div class="bigBox">
+            <ul class="container">
+                <div class="bw t flex_a mt20 p30_20">
+                    <img src="../img/hotelicon.png" style="width: .46rem;height: .44rem" />
+                    <ul class="ml20">
+                        <p class="y_name">
+                            <!-- xx酒店 -->
+                        </p>
+                        <p class="col9 f24 y_address">
+                            <!-- 广东省广州市天河区广州大道中988号 -->
+                        </p>
+                    </ul>
+                </div>
+                <div class="mt20 bw bdb flex-sb p30_20">
+                    <p>房间类型</p>
+                    <input class="tae f_type" type="text" name="type" placeholder="请选择房间类型" />
+                </div>
+                <div class="bw bdb flex-sb p30_20">
+                    <p>入住时间</p>
+                    <ul class="flex">
+                        <input class="mr20 tae" type="text" name="time" id="datetimeDate" placeholder="请输入" readonly />
+                        <img src="../img/y_arrow_right.png" style="width:.12rem;height: .2rem" />
+                    </ul>
+                </div>
+                <div class="bw bdb flex-sb p30_20">
+                    <p>入住天数</p>
+                    <div class="flex day">
+                        <label class="wh minus">
+                            <button class="font18">−</button>
+                        </label>
+                        <input class="font18 wh tac num bw" type="number" name="" value="1" disabled>
+                        <label class="wh add">
+                            <button class="font18">+</button>
+                        </label>
+                    </div>
+                </div>
+                <!-- <div class="bw bdb flex-sb p30_20">
+                    <p>加床数量</p>
+                    <ul class="flex">
+                        <input type="number" class="tae addBed mr20" name="addBed" />
+                        <img src="../img/y_arrow_right.png" style="width:.12rem;height: .2rem" />
+                    </ul>
+                </div> -->
+                <div class="bw bdb flex-sb p30_20 chose_num">
+                    <p>选择房号</p>
+                    <ul class="flex">
+                        <p class="mr20 c_fh"></p>
+                        <img src="../img/y_arrow_right.png" style="width:.12rem;height: .2rem" />
+                    </ul>
+                </div>
+                <div class="bw bdb p30_20">
+                    <p>租房类型</p>
+                    <div class="flex-sb y_type">
+                        <span class="active">钟点房</span>
+                        <span>限时优惠</span>
+                        <span>普通房</span>
+                    </div>
+                </div>
+                <div class="mt20 bw p30_20 hide">
+                    <p>消耗品
+                        <span class="col6">（所属于消耗品类型的商品消费另计）</span>
+                    </p>
+                    <div class="consumeBox"></div>
+                    <!-- <p class="flex-sb col9 mt20">
+                        <span>矿泉水*2</span>
+                        <span>￥5.00/支</span>
+                    </p>
+                    <p class="flex-sb col9 mt10">
+                        <span>浴帽*2</span>
+                        <span>￥5.00/个</span>
+                    </p> -->
+                </div>
+            </ul>
+            <!-- 底部 -->
+            <div class="bottom flex-sb">
+                <ul style="margin-left:1rem">
+                    <p class="tae">应付金额
+                        <span class="font16 color1 totalPrice">￥0.00</span>
+                    </p>
+                    <p class="col6 tae deposit">（含押金￥0.00，离店时可返）</p>
+                </ul>
+                <button class="pay">立即支付</button>
+            </div>
+        </div>
+        <div class="mask flex" style="position: fixed;height: 100%;width: 100%;top:0;background:rgba(0,0,0,0.6);z-index: 1;display:none;">
+            <div class="chose_num_hover">
+                <p class="tac mt20 font16">选择房号</p>
+                <ul class="flex_a chose_fh">
+                    <!-- <span class="active">601</span>
+                    <span>601</span>
+                    <span>602</span>
+                    <span>603</span>
+                    <span>604</span>
+                    <span>605</span> -->
+                </ul>
+                <p class="mt60 confirm flex">
+                    <em class="return_btn flex">取消</em>
+                    <em class="confirm_btn flex">确认</em>
+                </p>
+            </div>
+        </div>
+    </body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/mobiscroll.custom-3.0.0-beta6.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script src="../js/o_base.js"></script>
+<script>
+    var roomState = '',
+        outDay;
+
+    // 初始获取数据
+    $('.y_name').text(decodeURI(getParam().name));
+    $('.y_address').text(decodeURI(getParam().address));
+    $('.f_type').val(decodeURI(getParam().type));
+    if (getData('bookData')) {
+        var obj = getData('bookData');
+        $('.c_fh').text(obj.room);
+        $('.num').val(obj.num).attr('data-deposit', obj.deposit).attr('data-money', obj.money);
+        $('.y_type').html('<span class="active">' + obj.type + '</span>')
+        $('#datetimeDate').val(obj.time);
+        $('.totalPrice').text('￥' + obj.sum.toFixed(2));
+        $('.deposit').text('（含押金￥' + obj.deposit.toFixed(2) + '，离店时可返）')
+        console.log(1)
+        $(".chose_num").data("status", "1")
+    } else {
+        var obj = {};
+    }
+
+    function getRoom() {
+        console.log($('#datetimeDate').val())
+        dlc_request('appHostel/selectRoom', {
+            roomTypeId: getParam().roomId,
+            makeDate: $('#datetimeDate').val().replace(new RegExp("/", "gm"), "-"),
+            outRoomDate: outDay
+        }, function (res) {
+            console.log(res);
+            if (res.code == 1) {
+                $('.mask').fadeIn(); //显示选择菜单
+                var list = res.roomInfo;
+                var str = '';
+                list.forEach((item, index) => {
+                    str += '<span data-roomId=' + item.ROOM_ID + ' data-type=' + item.RENTTYPE_ID +
+                        ' data-money=' + item.ROOM_PRICE + ' data-deposit=' + item.ROOM_DEPOSITPRICE +
+                        '>' + item.ROOM_NAME + '</span>'
+                })
+                if (str) {
+                    $('.chose_fh').html(str)
+                } else {
+                    dlctipbox.show('已经客满，还请选择其他房间');
+                    setTimeout(() => {
+                        location.href = 'y_selHotel.html'
+                    }, 1500)
+                }
+            } else {
+                dlctipbox.show(res.msg);
+            }
+        })
+    }
+    //添加天数
+    $('.day').on('click', '.add', function () {
+        var i = $('.num').val();
+        // if ($('.c_fh').text() == '') {
+        //     dlctipbox.show('请选择房号');
+        // } else {
+        i++;
+        $('.num').val(i);
+        // countFun();
+        getEndDay(i);
+        $('.c_fh').text("");
+        $(".hide").hide();
+        // }
+    })
+    //减少天数
+    $('.day').on('click', '.minus', function () {
+        var i = $('.num').val();
+        // if ($('.c_fh').text() == '') {
+        //     dlctipbox.show('请选择房号');
+        // } else {
+        i--;
+        if (i <= 0) {
+            i = 0;
+        } else {
+            $('.num').val(i);
+            // countFun();
+            getEndDay(i);
+            $('.c_fh').text("");
+            $(".hide").hide();
+        }
+        // }
+
+    })
+    // 时间的选择
+    var minDate = new Date();
+    $('#datetimeDate').mobiscroll().date({
+        theme: 'mobiscroll',
+        lang: 'zh',
+        display: 'center',
+        select: 'multiple',
+        ateFormat: 'mm/yy',
+        controls: ['calendar'],
+        min: minDate,
+        onClose: resetRoom
+    })
+
+    function resetRoom() {
+        $('.c_fh').text("");
+        $(".hide").hide();
+
+        getEndDay(1);
+    }
+    // 预约弹出选择
+    // $('.y_type').on('click', 'span', function() {
+    //     $(this).addClass('active').siblings().removeClass('active');
+    // })
+    // 选择房号
+    $('.chose_num_hover').on('click', 'span', function () {
+        $(this).addClass('active').siblings().removeClass('active');
+        $('.c_fh').text($(this).text()); //记录选择的房间型号
+        $('.num').attr('data-money', $(this).data('money')).attr('data-deposit', $(this).data('deposit'));
+        var num = $('.num').val();
+        sum = ($(this).data('money') * 1) * num + $(this).data('deposit') * 1;
+        $('.totalPrice').text("￥" + sum.toFixed(2)); //单价
+        $('.deposit').text('（含押金￥' + $(this).data('deposit').toFixed(2) + '，离店时可返）'); //押金
+        console.log($(this).data('type'));
+        if ($(this).data('type') == 0) {
+            $('.y_type').html('<span class="active">钟点房</span><span>限时优惠</span><span>普通房</span>')
+        } else if ($(this).data('type') == 1) {
+            $('.y_type').html('<span>钟点房</span><span class="active">限时特惠 </span><span>普通房</span>')
+        } else {
+            $('.y_type').html('<span>钟点房</span><span>限时特惠</span><span class="active">普通房</span>')
+        }
+        obj.typeId = $(this).data('type');
+        obj.money = $('.num').data('money');
+        obj.deposit = $('.num').data('deposit');
+        obj.roomId = $(this).data('roomid');
+        console.log($(this).data('roomid'));
+        obj.room = $(this).text();
+    })
+    // 选择房间型号
+    $('#close-approve').on('click', function () {
+        $('.mask').hide();
+    })
+    // 弹出选择房号
+    $('.chose_num').on('click', function () {
+        if ($('#datetimeDate').val() != "") {
+            getRoom();
+        }
+    })
+    // 确认选择房号
+    $('.confirm_btn').on('click', function () {
+        $('.c_fh').text($('.chose_fh span.active').text());
+        consumables();
+        $('.mask').fadeOut();
+    })
+    // 取消选择
+    $('.return_btn').on('click', function () {
+        $('.mask').fadeOut();
+    })
+    // 立即支付
+    $('.pay').on('click', function () {
+        var f_type = $('.f_type').val();
+        var c_fh = $('.c_fh').text();
+        var c_time = $('#datetimeDate').val();
+        if (isNull(f_type)) {
+            dlctipbox.show('请选择房间类型')
+        } else if (isNull(c_fh)) {
+            dlctipbox.show('请选择房号')
+        } else if (isNull(c_time)) {
+            dlctipbox.show('请选择入住日期')
+        } else {
+            obj.num = $('.num').val();
+            obj.sum = $('.totalPrice').text().split('￥')[1] * 1;
+            obj.time = $('#datetimeDate').val();
+            obj.type = $('.y_type span.active').text();
+            setData('hotelArr', obj);
+            dlctipbox.loading();
+            setTimeout(() => {
+                dlctipbox.clear();
+                location.href = 'y_pay.html?price=' + obj.money + '&sum=' + obj.sum + '&deposit=' + $(
+                    '.num').data('deposit') + '&y=1&type=3';
+                // location.href = 'y_pay.html?sum=' + obj.sum + '&deposit=' + obj.deposit + '&y=1&type=3';
+            }, 3000)
+        }
+    })
+    // 消耗品
+    function consumables() {
+        dlc_request('appHostel/queryConsumables', {
+            ROOM_ID: obj.roomId
+        }, function (res) {
+            console.log(res);
+            if (res.code == 1) {
+                var str = '';
+                var list = res.consumablesList.listData;
+                list.forEach((item, index) => {
+                    str += '<p class="flex-sb col9 mt20" data-id=' + item.ROOM_CONSUMER_ID + '>' +
+                        '<span>' + item.CONSUMER_NAME + '*1</span>' +
+                        '<span>￥' + item.CONSUMER_PRICE.toFixed(2) + '</span>' +
+                        '</p>'
+                })
+                if (str) {
+                    $('.consumeBox').html(str)
+                } else {
+                    $('.consumeBox').html('<span class="col9 mt20">暂无数据</span>')
+
+                }
+                $(".hide").show();
+            } else {
+                dlctipbox.show(res.msg);
+            }
+        })
+    }
+
+    function countFun() { //统计
+        var i = $('.num').val();
+        var price = $('.num').data('money') * 1;
+        var deposit = $('.num').data('deposit') * 1;
+        var sum = price * i + deposit;
+        $('.totalPrice').text('￥' + sum.toFixed(2));
+    }
+
+    function formatTime(date) {
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1,
+            month = month < 10 ? '0' + month : month;
+        var day = date.getDate(),
+            day = day < 10 ? '0' + day : day;
+        return year + '-' + month + '-' + day;
+    }
+
+    function getEndDay(day) {
+        var now = $('#datetimeDate').val().split('/');
+        console.log(now)
+        now = new Date(Number(now['0']), (Number(now['1']) - 1), Number(now['2']))
+        var time = now.setDate(now.getDate() + day);
+        outDay = format(time, "Y-m-d")
+    }
+</script>

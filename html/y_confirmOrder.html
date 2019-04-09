@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>确认订单</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+        window['adaptive'].baseFont = 28;
+        window['adaptive'].init();
+    </script>
+    <style>
+        .wh {
+            width: 0.68rem;
+            height: 0.68rem;
+            display: flex;
+            color: #666;
+            font-size: .32rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wh:nth-child(2) {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .c_box {
+            border: 1px solid #ddd;
+            border-radius: .1rem;
+        }
+
+        .pay {
+            color: #fff;
+            width: 28%;
+            height: 1rem;
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        }
+    </style>
+
+    <body>
+        <div class="bigBox">
+            <ul class="container">
+                <div class="bw mt20 flex-sb p30_20" onclick="addAddress()">
+                    <ul class="confirmAddress">
+                        <p>请输入默认地址</p>
+                        <!-- <p class="font16">小飞侠<span class="mr20">13828445258</span> </p>
+                        <p class="col9 mt20">广东省东莞市南城街道高盛科技园A座301</p> -->
+                    </ul>
+                    <img src="../img/y_arrow_right.png" style="width:.12rem;height:.2rem;">
+                </div>
+                <div class="goodsBox">
+                    <!-- <div class="mt20 p30_20 bw flex_a bdb">
+                    <img src="../img/y_4.png" style="width:1.94rem;height:1.54rem" />
+                    <ul class="ml20 w100">
+                        <p>可乐鸡翅</p>
+                        <p class="color1 mt20">
+                            <span class="price">￥80.00</span>
+                        </p>
+                        <p class="mt20 tae col6 num">x0</p>
+                    </ul>
+                </div> -->
+                </div>
+                <!-- <div class="p30_20 bw flex-sb bdb list">
+                    <span>数量</span>
+                    <div class="flex c_box">
+                        <label class="wh minus">
+                            <button class="font18 col6">&minus;</button>
+                        </label>
+                        <input class="font18 wh tac num" type="number" name="" value="0" />
+                        <label class="wh add">
+                            <button class="font18 col6">+</button>
+                        </label>
+                    </div>
+                </div> -->
+                <div class="p30_20 bw flex-sb bdb">
+                    <span>运费</span>
+                    <span class="col6 deposit">￥0.00</span>
+                </div>
+                <div class="p30_20 bw flex-sb">
+                    <span>共
+                        <span class="count">0</span> 件商品</span>
+                    <span class="col6 subtotal">小计：￥0.00</span>
+                </div>
+            </ul>
+            <div class="bottom flex-sb">
+                <ul style="width:80%">
+                    <p class="tae">合计
+                        <span class="font16 color1 sum">￥0.00</span>
+                    </p>
+                </ul>
+                <button class="pay ml20">提交订单</button>
+            </div>
+        </div>
+    </body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script type="text/javascript">
+    addEventback();
+    var arr1 = [];
+    var obj1 = {};
+    var sum = 0;
+    var deposit = 0;
+    var addressId = 0;
+    // 地址跳转
+    function addAddress() {
+        location.href = 'y_address.html?shop=1'
+    }
+    /* if (getData('shopArr').length > 0) {
+        var arr = getData('shopArr'),
+            str = '',
+            count = 0;
+        console.log(arr);
+        for (var i = 0; i < arr.length; i++) {
+            var item = arr[i];
+            str += '<div class="mt20 p30_20 bw flex_a bdb" data-id=' + item.orderId + '>' +
+                '<img src="' + item.orderImg + '" style="width:1.94rem;height:1.54rem">' +
+                '<ul class="ml20 w100">' +
+                '<p>' + item.orderName + '</p>' +
+                '<p class="color1 mt20"><span class="price">￥' + Number(item.orderPrice).toFixed(2) +
+                '</span></p > ' +
+                ' <p class="mt20 tae col6 num">x' + item.orderNumber + '</p>' +
+                '</ul>' +
+                '</div>'
+            obj1 = {};
+            obj1.orderId = item.orderId;
+            obj1.orderFreight = item.orderFreight;
+            obj1.orderPrice = item.orderPrice;
+            obj1.orderNumber = item.orderNumber;
+            sum += item.orderPrice * item.orderNumber;
+            arr1.push(obj1);
+        }
+        for (var i = 0; i < arr1.length; i++) {
+            count = count * 1 + arr1[i].orderNumber * 1;
+        }
+        $('.goodsBox').append(str);
+        $('.subtotal').text('小计：￥' + (Number(sum) + Number(deposit)).toFixed(2));
+        $('.count').text(count)
+    } */
+
+
+    dlc_request('appHotelShop/queryAddress', {
+        userId: user_token().USER_ID
+    }, function (res) { //地址列表
+        console.log(res);
+        if (res.code == 1) {
+            var list = res.hostelList.listData;
+            list.forEach((item, index) => {
+                if (item.USER_ADDRESS_STATE == 1) { //有默认地址的情况
+                    addressId = item.ADDRESS_ID;
+                    $('.confirmAddress').html('<li class="addr" data-price=' + item.Price +
+                        '><p class="font16">' + item.USER_CONSIGNEE +
+                        '<span class="ml20">' + item.USER_CONSIGNEE_PHONE +
+                        '</span> </p><p class="col9 mt20">' + item.CityName.replace(/,/g, "") + '' +
+                        item.USER_ADDRESS + '</p></li>')
+                }
+            });
+            (list.length > 0) ? deposit = $('.addr').data('price'): deposit = 0;
+            init()
+            $('.deposit').text('￥' + Number(deposit).toFixed(2));
+            $('.sum').text('￥' + Number(sum * 1 + deposit * 1).toFixed(2));
+        } else {
+            dlctipbox.show(res.msg);
+        }
+    })
+
+    function init() {
+        if (getData('total').length > 0) {
+            var arr = getData('total'),
+                str = '',
+                count = 0;
+            if (getData("shopArr")) {
+                arr = getData("shopArr")
+            }
+            console.log(arr);
+            for (var i = 0; i < arr.length; i++) {
+                for (var j = 0; j < arr[i].goods.length; j++) {
+                    var item = arr[i].goods[j]
+                    if (item.num > 0) {
+                        str += '<div class="mt20 p30_20 bw flex_a bdb" data-id=' + item.GOODS_ID + '>' +
+                            '<img src="' + item.GOODS_IMAGE + '" style="width:1.94rem;height:1.54rem">' +
+                            '<ul class="ml20 w100">' +
+                            '<p>' + item.GOODS_NAME + '</p>' +
+                            '<p class="color1 mt20"><span class="price">￥' + Number(item.GOODS_PRICE).toFixed(2) +
+                            '</span></p > ' +
+                            ' <p class="mt20 tae col6 num">x' + item.num + '</p>' +
+                            '</ul>' +
+                            '</div>'
+                        obj1 = {};
+                        obj1.orderId = item.GOODS_ID;
+                        obj1.orderFreight = $('.addr').data('price')
+                        obj1.orderPrice = item.GOODS_PRICE;
+                        obj1.orderNumber = item.num;
+                        sum += item.GOODS_PRICE * item.num;
+                        arr1.push(obj1);
+                        console.log(arr1);
+                    }
+                }
+            }
+            for (var i = 0; i < arr1.length; i++) {
+                count = count * 1 + arr1[i].orderNumber * 1;
+            }
+            $('.goodsBox').append(str);
+            $('.subtotal').text('小计：￥' + (Number(sum) + Number(deposit)).toFixed(2));
+            $('.count').text(count)
+        }
+    }
+
+    // 提交订单跳转
+    var a = 0;
+    $('.pay').click(function () {
+        if (addressId == 0) {
+            dlctipbox.show("请选择收货地址");
+            return false;
+        }
+        dlctipbox.loading();
+        setData('shopArr', JSON.stringify(arr1))
+        setTimeout(() => {
+            dlctipbox.clear();
+            location.href = '../html/y_pay.html?type=2&sum=' + sum + '&deposit=' + deposit +
+            '&addressId=' + addressId;
+        }, 2000)
+    })
+    // var price = $('.price').text().split('￥')[1] * 1; //单价
+    // var yf = $('.yf').text().split('￥')[1] * 1; //运费
+
+    // //添加购物车
+    // $('.list').on('click', '.add', function () {
+    //     $('.tip').text($('.tip').text() * 1 + 1);
+    //     var numbers = $(this).prevAll('input').val() * 1 + 1;
+    //     var goods_id = $(this).parents('li').data('goods_id');
+    //     $(this).parent().find('.num').val(numbers);
+    //     $('.num').text('x' + numbers);
+    //     $('.count').text(numbers);
+    //     // 运费、小计、合计
+    //     var num = $('.num').text().split('x')[1] * 1; //数量
+    //     a = price * num;
+    //     $('.subtotal').text('￥' + a.toFixed(2)); // 小计
+    //     $('.sum').text('￥' + (a + yf).toFixed(2));
+
+    // })
+    // //减少购物车
+    // $('.list').on('click', '.minus', function () {
+    //     var numbers = $(this).nextAll('input').val() * 1 - 1;
+    //     var goods_id = $(this).parents('li').data('goods_id');
+    //     if ($(this).nextAll('input').val() > 0) {
+    //         $(this).parent().find('.num').val(numbers);
+    //         $('.num').text('x' + numbers);
+    //     }
+    // })
+</script>

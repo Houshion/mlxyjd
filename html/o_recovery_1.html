@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>商品订单</title>
+    <style>
+        .navList .nav {
+            width: 25%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navList flex fixed_top">
+        <div class="nav">
+            <div class="navbtn pick" data-type='99'>全部</div>
+        </div>
+        <div class="nav">
+            <div class="navbtn" data-type='1'>待发货</div>
+        </div>
+        <div class="nav">
+            <div class="navbtn" data-type='2'>待收货</div>
+        </div>
+        <div class="nav">
+            <div class="navbtn" data-type='3'>已完成</div>
+        </div>
+    </div>
+    <div class="list mg-t-50">
+
+    </div>
+</body>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/o_base.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    $(function () {
+
+        var type = "99"; //默认查看全部
+
+        $(".navbtn").on("click", function (index) {
+            var _this = $(this);
+            console.log(index);
+            $(".navbtn").removeClass("pick");
+            if (!_this.hasClass("pick")) {
+                _this.addClass("pick");
+                type = _this.data("type");
+            }
+            getList();
+        });
+
+        function getList() {
+            // 获取列表数据
+            var param = {
+                userId: user_token().USER_ID, // 用户ID
+                orderId: "",
+                pageSize: 20, // 每页的条数
+                currentPage: 1, // 第几页
+            }
+            if (type != "99") {
+                type == 1 ? param.noin = type : param.state = type
+            }
+            ajaxPost(param, "appHostel/listOrderShop", function (res) {
+                if (res.code == 1) {
+                    var list = res.orderShopInfo.listData;
+                    var str = '',
+                        hType, color, status, btn;
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].GOODS_ORDER_STATE == 1) {
+                            hType = "d1";
+                            color = "cred";
+                            status = "待发货";
+                            btn = ''
+                        } else if (list[i].GOODS_ORDER_STATE == 2) {
+                            hType = "d2";
+                            color = "cblue";
+                            status = "待收货";
+                            btn = '<div class="statusBtn">' +
+                                '<div class="pd-10">' +
+                                '<div class="btn btn1 fr mg-l-10">确认收货</div>' +
+                                '<div class="clear"></div>' +
+                                '</div>' +
+                                '</div>'
+                        } else if (list[i].GOODS_ORDER_STATE == 3) {
+                            hType = "d3";
+                            color = "cgreen";
+                            status = "已完成";
+                            btn = '';
+                        }
+                        if (list[i].GOODS_ORDER_STATE != 0) {
+                            var tPrice = 0;
+                            list[i].price.split(",").forEach(price => {
+                                tPrice = tPrice + Number(price)
+                            });
+                            str +=
+                                '<div class="listBox mg-b-10 bfff" onclick="goTo(\'o_orderDetail.html\',\'type=' +
+                                hType + '&id=' + list[i].GOODS_ORDER_CODE + '&price=' + tPrice +
+                                '\')">' +
+                                '<div class="listTitle pd-10 c999">' +
+                                '<div class="fl">' + list[i].GOODS_ORDER_CODE + '</div>' +
+                                '<div class="fr ' + color + '">' + status + '</div>' +
+                                '<div class="clear"></div>' +
+                                '</div>' +
+                                '<div class="content flex border-b border-t">' +
+                                '<div class="wd-30">' +
+                                '<img src="https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/' +
+                                list[i].GOODS_IMAGE.split(",")[0] + '" class="wd-100">' +
+                                '</div>' +
+                                '<div class="wd-70 box pd-10">' +
+                                '<div class="wd-100 flex flexWrap flexACenter">' +
+                                '<div>' + list[i].sname.replace(/,/g, "+") + '</div>' +
+                                '<div class="flex flexBetween wd-100">' +
+                                '<div class="c999">￥' + tPrice.toFixed(2) + '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' + btn + '</div>';
+                        }
+                    }
+                    $(".list").html(str);
+                } else {
+                    $(".list").html("<div class='ta-center'>...暂无数据...</div>");
+                }
+            });
+        }
+        getList();
+    });
+</script>
+
+</html>

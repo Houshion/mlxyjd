@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>登录</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/intlTelInput.css">
+    <link rel="stylesheet" href="../css/demo.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <script src="../js/adaptive.js" type="text/javascript"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+    window['adaptive'].baseFont = 28;
+    window['adaptive'].init();
+    </script>
+    <style type="text/css">
+        .logo {
+            height: 3.7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .t {
+            margin: .2rem 0.5rem;
+            border-radius: 50px;
+            border: 1px solid #e8e8e8;
+            height: 1rem;
+        }
+
+        .mglr10 {
+            margin: 0 10px;
+            color: #bbbbbb
+        }
+
+        select {
+            border: none
+        }
+
+        #yzm {
+            color: #fff;
+            margin-right: 0.2rem;
+            width: 2.0rem;
+            height: .66rem;
+            line-height: .66rem;
+            text-align: center;
+            border-radius: 50px;
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+        }
+    </style>
+
+<body class="bw">
+    <div class="logo">
+        <img src="../img/logo.png" style="width:1.8rem;height:1.8rem;border-radius:50%;" />
+    </div>
+    <div class="t flex_a pl40">
+        <!-- <select>
+            <option>中国</option>
+            <option>日本</option>
+        </select>
+        <span class="mglr10">+86</span> -->
+        <input type="tel" id="phone" class="phone" name="phone" placeholder="请输入您的手机号码" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"
+            maxlength="11" />
+    </div>
+    <div class="t flex_a pl40 flex-sb">
+        <input type="text" class="code" name="code" placeholder="请输入验证码 " />
+        <div id="yzm">获取验证码</div>
+    </div>
+    <div class="main_btn">确定</div>
+</body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/intlTelInput.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    var send = true;
+    isLogin(function (res) {
+        console.log(res);
+        if (res.flag == 1) { //登录成功
+        } else {
+            dlctipbox.show(res.msg);
+        }
+    });
+    // 验证码
+    $('#yzm').click(function () {
+        if (send) {
+            var tel = $('.phone').val();
+            if (isNull(tel)) {
+                dlctipbox.show('手机号码不能为空');
+                // return false;
+            }
+            // else if (!checkMobileAndTel(tel)) {
+            //     dlctipbox.show('手机号码格式不正确');
+            //     // return false;
+            // } 
+            else {
+                var second = 60;
+                var countryCode = $(".selected-flag").attr("title").split("+")[1]
+                console.log(countryCode)
+                if (countryCode == 86) {
+                    countryCode = '';
+                }
+                dlc_request('applogin/sendCode', {
+                    phone: countryCode + tel
+                }, function (res) {
+                    console.log(res);
+                    if (res.code == 1) {
+                        var t = setInterval(function () {
+                            if (second <= 0) {
+                                second = 0;
+                                $("#yzm").text("重发验证码").attr("disabled", false).css({
+                                    'background': 'linear-gradient(to right, #6c8eda, #4bc0ed)',
+                                    'border': '0'
+                                });
+                                send = true;
+                                clearInterval(t);
+                            } else {
+                                second--;
+                                $("#yzm").attr("disabled", true);
+                                $("#yzm").text(second + "s").css({
+                                    'background': '#ccc',
+                                    'border': '0'
+                                });
+                                send = false;
+                            }
+                        }, 1000);
+                        dlctipbox.show(res.msg);
+                    } else {
+                        onOff = 0;
+                        dlctipbox.show(res.msg);
+                    }
+                })
+            }
+        }
+    })
+    //注册按钮点击事件
+    var onOff = 0;
+    // 获取登陆身份
+    $('.main_btn').on('click', function (e) {
+        e.preventDefault();
+        if (onOff) return false;
+        var tel = $('.phone').val();
+        var yzm = $('.code').val();
+        var countryCode = $(".selected-flag").attr("title").split("+")[1];
+        console.log(countryCode)
+        if (countryCode == 86) {
+            countryCode = '';
+        }
+        if (isNull(tel)) {
+            dlctipbox.show('手机号码不能为空');
+            return false;
+        }
+        // else if (!checkMobileAndTel(tel)) {
+        //     dlctipbox.show('手机号码格式不正确');
+        //     return false;
+        // } 
+        else if (isNull(yzm)) {
+            dlctipbox.show('验证码不能为空');
+            return false;
+        } else {
+            onOff = 1;
+            dlc_request('applogin/login', {
+                phone: countryCode + tel,
+                code: yzm,
+                // phonePrefix: countryCode,
+                openid: user_token().openid,
+                ROLE_ID: user_token().ROLE_ID
+            }, function (res) {
+                console.log(res);
+                if (res.code == 1) {
+                    dlctipbox.show(res.msg);
+                    var mainData = user_token();
+                    mainData.userId = res.data.USER_ID;
+                    mainData.phone = res.data.PHONE;
+                    mainData.username = res.data.USERNAME;
+                    mainData.roleid = res.data.ROLE_ID;
+
+                    dlc_request('appHotelShop/hotelId', {}, function (res) {
+                        mainData.hotelId = res.hostelId.HOTEL_ID
+                        user_save(mainData);
+                        console.log(user_token().ROLE_ID)
+                        setTimeout(function () { //登陆身份(房客传6 收房员传5)
+                            if (user_token().ROLE_ID == 5) { //管理员
+                                location.replace('o_recovery.html');
+                            } else if (getUrlParam('type') == '2') { //个人中心
+                                location.replace('y_center.html');
+                            } else if (getUrlParam('type') == '4') { //微商城
+                                location.replace('y_wshop.html');
+                            } else { // 默认跳转预约
+                                location.replace('y_selHotel.html');
+                            }
+                        }, 1500)
+                    });
+                } else {
+                    onOff = 0;
+                    dlctipbox.show(res.msg);
+                }
+            })
+        }
+    })
+    // 国家地区选择
+    $("#phone").intlTelInput({
+        utilsScript: "../js/utils.js"
+    });
+</script>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta
+      name="viewport"
+      content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="../css/o_base.css" />
+    <link rel="stylesheet" href="../css/o_style.css" />
+    <title>收房</title>
+  </head>
+
+  <body>
+    <div id="recovery">
+      <div class="navList flex fixed_top">
+        <div class="nav">
+          <div
+            class="navbtn pick"
+            data-status="unrecovery"
+            data-type="3"
+            onclick="navBtn(this)"
+          >
+            未收房
+          </div>
+        </div>
+        <div class="nav">
+          <div
+            class="navbtn"
+            data-status="recovery"
+            data-type="4"
+            onclick="navBtn(this)"
+          >
+            已收房
+          </div>
+        </div>
+      </div>
+      <div class="mg-10 mg-t-50 unrecovery listBox"></div>
+      <div class="mg-10 mg-t-50 recovery listBox hide"></div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="mask hide"></div>
+    <!-- 隐藏框 -->
+    <div class="loading hide">
+      <span></span> <span></span> <span></span> <span></span> <span></span>
+      <div style="margin-top: 15px">请稍候...</div>
+    </div>
+  </body>
+  <script src="../js/jquery-1.8.3.min.js"></script>
+  <script src="../js/o_base.js"></script>
+  <script src="../js/dlc.js"></script>
+  <script>
+    var param,
+      Arr = [];
+    var type = 3;
+    var navType;
+
+    if (user_token() == null || user_token().phone == "") {
+      location.href = "y_login.html";
+    } else if (user_token().ROLE_ID == 6) {
+      location.href = "y_selHotel.html";
+    } else {
+      // getNav() //获取导航栏状态
+      ajaxPost("", "appHotelShop/hotelId", function(res) {
+        // 获取列表数据
+        param = {
+          pageSize: 99, // 每页的条数
+          currentPage: 1, // 第几页
+          HOTEL_ID: res.hostelId.HOTEL_ID
+        };
+        getAdminNav(type); //获取导航栏状态
+        getList(type);
+      });
+    }
+
+    function getList(types) {
+      Arr = [];
+      param.state = types;
+      $(".mask").show();
+      $(".loading").show();
+      ajaxPost(param, "appHostel/listOrder", function(res) {
+        $(".mask").hide();
+        $(".loading").hide();
+        if (res.code == 1) {
+          var list = res.orderList.listData;
+          var str = "";
+          var status, obj, goTo, time;
+          for (var i = 0; i < list.length; i++) {
+            if (param.state == 3) {
+              obj = $(".unrecovery");
+              status = '<div class="pd-t-15 ta-center cred">未收房</div>';
+              goTo = "Confirm";
+              time = list[i].subMitDate;
+            } else {
+              obj = $(".recovery");
+              status = '<div class="pd-t-15 ta-center cblue">已收房</div>';
+              goTo = "Detail";
+              time = list[i].recoveryDate;
+            }
+            var UrlParam = {
+              HOTELROOMTYPE_NAME: list[i].HOTELROOMTYPE_NAME,
+              FLOOR_NAME: list[i].FLOOR_NAME,
+              ROOM_NAME: list[i].ROOM_NAME,
+              USERNAME: list[i].USERNAME,
+              ROOM_ID: list[i].ROOM_ID,
+              ORDERID: list[i].ORDERID,
+              recoveryDate: list[i].recoveryDate,
+              HOTEL_ORDER_RECOVERYCONTENT: list[i].HOTEL_ORDER_RECOVERYCONTENT,
+              roomConsumerInfo: list[i].roomConsumerInfo
+            };
+            Arr.push(JSON.stringify(UrlParam));
+            str +=
+              '<div class="pd-15 list mg-b-10 radius10 bfff" onclick="go(\'' +
+              goTo +
+              "'," +
+              i +
+              ')">' +
+              '<div class="border-b pd-10 flex flexWrap">' +
+              '<div class="wd-50 flex mg-b-10">' +
+              '<div class="img">' +
+              '<img src="../img/o_home.png" class="wd-60">' +
+              "</div>" +
+              "<div>房间号：" +
+              '<span class="c999">' +
+              list[i].ROOM_NAME +
+              "</span>" +
+              "</div>" +
+              "</div>" +
+              '<div class="wd-50 flex mg-b-10">' +
+              '<div class="img">' +
+              '<img src="../img/o_floor.png" class="wd-60">' +
+              "</div>" +
+              "<div>所属楼层：" +
+              '<span class="c999">' +
+              list[i].FLOOR_NAME +
+              "</span>" +
+              "</div>" +
+              "</div>" +
+              '<div class="wd-100 flex mg-b-10">' +
+              '<div class="img">' +
+              '<img src="../img/o_timer.png" class="wd-60">' +
+              "</div>" +
+              "<div>时间：" +
+              '<span class="c999">' +
+              time +
+              "</span>" +
+              "</div>" +
+              "</div>" +
+              "</div>" +
+              status +
+              "</div>";
+          }
+          obj.html(str);
+        }
+      });
+    }
+
+    // 前往详情
+    function go(url, param) {
+      setData("recoveryData", Arr[param]);
+      switch (url) {
+        case "Confirm":
+          goTo("o_recoveryConfirm.html", "type=" + type);
+          break;
+        case "Detail":
+          goTo("o_recoveryDetail.html", "type=" + type);
+          break;
+      }
+    }
+
+    function navBtn(obj) {
+      var _this = $(obj);
+      var status = _this.data("status");
+
+      $(".navbtn").removeClass("pick");
+      if (!_this.hasClass("pick")) {
+        _this.addClass("pick");
+        type = _this.data("type");
+      }
+
+      $(".listBox").hide();
+      $("." + status).show();
+      setAdminNav(type); // 保存导航栏状态，返回回到当前位置
+      getList(type);
+    }
+  </script>
+</html>

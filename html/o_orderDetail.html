@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>详情</title>
+</head>
+
+<body>
+    <div class="orderdetail">
+        <div class="box1 bfff pd-10 mg-t-10 hide d1">
+            <div class="ta-left flex lh32">
+                <div class="icon bred">!</div>
+                <div>待发货</div>
+            </div>
+        </div>
+        <div class="box1 bfff pd-10 mg-t-10 hide d2">
+            <div class="ta-left flex lh32">
+                <div class="icon bblue">!</div>
+                <div>卖家已发货，等待收货</div>
+            </div>
+        </div>
+        <div class="box1 bfff pd-10 mg-t-10 hide d3">
+            <div class="ta-left flex lh32">
+                <div class="icon bgreen">!</div>
+                <div>已完成</div>
+            </div>
+        </div>
+        <div class="box2 bfff pd-10 mg-t-10">
+
+        </div>
+        <div class="box3 listBox mg-t-10 bfff">
+
+        </div>
+        <div class="box4 bfff pd-10 mg-t-10 lh32">
+
+        </div>
+        <div class="box1 bfff mg-t-10 ta-center hide d2">
+            <div class="btn1 pd-t-15 pd-b-15 confirm">确认收货</div>
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="mask hide"></div>
+    <!-- 隐藏框 -->
+    <div class="wd-60 bfff hide maskBox radius10" id="confirm">
+        <div class="pd-15">
+            <div class="ta-center">
+                <img src="../img/o_recovery.png" class="wd-40 mg-10">
+                <div>是否确认收货？</div>
+            </div>
+        </div>
+        <div class="border-t flex">
+            <div class="box wd-50 pd-15 border-r colbbb" onclick="hideModal($('#confirm'))">取消</div>
+            <div class="box wd-50 pd-15 btn1 confirm">确认</div>
+        </div>
+    </div>
+</body>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/o_base.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    $(function () {
+
+        var OrderType = getParam().type;
+
+        $(".confirm").on("click", function () {
+            showModal($('#confirm'))
+        });
+        //确认收货
+        $("#confirm").on("click", ".confirm", function () {
+
+            ajaxPost({
+                orderId: getParam().id,
+                state: 3
+            }, "appHostel/updateShopOrder", function (res) {
+                if (res.code == 1) {
+                    dlctipbox.show("操作成功");
+                    setTimeout(() => {
+                        location.href = "./o_orderList.html"
+                    }, 1500);
+                }
+            })
+        })
+        // 获取列表数据
+        var param = {
+            userId: user_token().USER_ID, // 用户ID
+            orderId: getParam().id,
+            // pageSize: 20, // 每页的条数
+            // currentPage: 1, // 第几页
+        }
+
+        function getList() {
+            switch (getParam().type) {
+                case "d1":
+                    param.state = 1
+                    break;
+                case "d2":
+                    param.state = 2
+                    break;
+                case "d3":
+                    param.state = 3;
+                    break;
+            }
+            ajaxPost(param, "appHostel/listOrderShop", function (res) {
+                if (res.code == 1) {
+                    var listInfo = res.orderShopInfo.listData;
+                    var addressInfo = res.adressInfo;
+                    var totalPrice = 0;
+                    var freightPrice = 0;
+                    if (!isNull(addressInfo)) {
+                        $(".box2").html(
+                            '<div class="name">' +
+                            '<span class="c999">收件人：</span>' +
+                            '<span class="font18">' + addressInfo.USER_CONSIGNEE + '</span>' +
+                            '<span class="mg-l-20 font18">' + addressInfo.USER_CONSIGNEE_PHONE +
+                            '</span>' +
+                            '</div>' +
+                            '<div class="address">' +
+                            '<div class="c999">' + addressInfo.CityName.replace(/,/g, "") +
+                            addressInfo.USER_ADDRESS +
+                            '</div>' +
+                            '</div>'
+                        )
+                    }
+                    var str = '';
+                    for (var i = 0; i < listInfo.length; i++) {
+                        freightPrice = listInfo[i].GOODS_FREIGHT;
+                        str +=
+                            '<div class="content flex border-b pd-10">' +
+                            '<div class="wd-30">' +
+                            '<img src="https://mlxyhotel.https.xiaozhuschool.com/uploadFiles/uploadImgs/' +
+                            listInfo[i].GOODS_IMAGE.split(",")[0] + '" class="wd-100">' +
+                            '</div>' +
+                            '<div class="wd-70 box pflr-10">' +
+                            '<div class="wd-100 flex flexWrap flexACenter">' +
+                            '<div>' + listInfo[i].GOODS_NAME + '</div>' +
+                            '<div class="flex flexBetween wd-100">' +
+                            '<div class="c999">￥' + (listInfo[i].price / listInfo[i].orderNumber).toFixed(
+                                2) + '</div>' +
+                            '<div>x' + listInfo[i].orderNumber + '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                        totalPrice = totalPrice + listInfo[i].price;
+                    }
+                    str +=
+                        '<div class="content border-b pd-10 c999">' +
+                        '<div class="flex flexBetween">' +
+                        '<div>商品总价</div>' +
+                        '<div>￥' + totalPrice.toFixed(2) + '</div>' +
+                        '</div>' +
+                        '<div class="flex flexBetween">' +
+                        '<div>快递费用</div>' +
+                        '<div>￥' + freightPrice.toFixed(2) + '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="content flex flexBetween border-b pd-10">' +
+                        '<div>实付款</div>' +
+                        '<div class="cred">￥' + (totalPrice + freightPrice).toFixed(2) + '</div>' +
+                        '</div>'
+                    $(".box3").append(str);
+                    $(".box4").append(
+                        '<div class="num">' +
+                        '<span>订单编号：</span>' +
+                        '<span class="c999">' + listInfo[0].GOODS_ORDER_CODE + '</span>' +
+                        '</div>' +
+                        '<div class="no">' +
+                        '<span>交易单号：</span>' +
+                        '<span class="c999">' + (listInfo[0].GOODS_ORDER_NO ? listInfo[0].GOODS_ORDER_NO :
+                            "暂无交易单号") + '</span>' +
+                        '</div>' +
+                        '<div class="ctime">' +
+                        '<span>创建时间：</span>' +
+                        '<span class="c999">' + listInfo[0].createDate + '</span>' +
+                        '</div>' +
+                        '<div class="ptime">' +
+                        '<span>付款时间：</span>' +
+                        '<span class="c999">' + listInfo[0].payDate + '</span>' +
+                        '</div>' +
+                        '<div class="ftime ' + (OrderType == "d2" || "d3" ? '' : 'hide') + '">' +
+                        '<span>发货时间：</span>' +
+                        '<span class="c999">' + (listInfo[0].deliveryDate ? listInfo[0].deliveryDate :
+                            "未发货") + '</span>' +
+                        '</div>' +
+                        '<div class="otime ' + (OrderType == "d3" ? '' : 'hide') + '">' +
+                        '<span>成交时间：</span>' +
+                        '<span class="c999">' + listInfo[0].makeDate + '</span>' +
+                        '</div>'
+                    )
+                }
+            });
+        }
+        getList()
+    });
+</script>
+
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>支付方式</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <script type="text/javascript" src="../js/adaptive.js"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+        window['adaptive'].baseFont = 28;
+        window['adaptive'].init();
+    </script>
+    <style>
+        /*    input[type=radio]:checked+span {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background: url(../img/chekbox.png) no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .confirm_label span {
+
+        background: url(../img/ic_radio_nor.png) no-repeat;
+        background-size: 100% 100%;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }*/
+
+        .main_btn {
+            margin-top: 1.4rem;
+        }
+
+        .roudBox {
+            display: inline-block;
+            width: .3rem;
+            height: .3rem;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+        }
+
+        .cBox:checked+span {
+            border-color: #fff;
+            background: url(../img/chekbox.png) no-repeat center center;
+            background-size: 100% 100%;
+        }
+    </style>
+
+    <body>
+        <div class="paytype-top">
+            <p style="font-size: 0.28rem;position:relative;top:0.8rem;color: #fff;">应付金额</p>
+            <p class="sum" style="font-size: 0.48rem;position:relative;top:1rem;color: #fff;">￥0</p>
+            <p class="deposit" style="font-size: 0.24rem;position:relative;top:1.2rem;color: #fff;">含押金￥0.00，退房时可返</p>
+        </div>
+        <div class="paytype-title-box">
+            <span>支付方式</span>
+        </div>
+        <div class="approve-line">
+            <label class="approve-line-box">
+                <div class="icon-pay1"></div>
+                <span class="approve-line-span">微信支付</span>
+                <div class="flex_a pos_r fr mr20 mt30">
+                    <p class="confirm_label">
+                        <input class="cBox" type="radio" name="pay" checked value="2" hidden/>
+                        <span class="roudBox"></span>
+                    </p>
+                </div>
+            </label>
+        </div>
+        <div class="approve-line">
+            <label class="approve-line-box">
+                <div class="icon-pay2"></div>
+                <span class="approve-line-span">余额支付</span>
+                <div class="flex_a pos_r fr mr20 mt30">
+                    <p class="confirm_label">
+                        <input class="cBox" ox type="radio" name="pay" value="1" hidden/>
+                        <span class="roudBox"></span>
+                    </p>
+                </div>
+            </label>
+        </div>
+        <div class="main_btn">立即支付</div>
+    </body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+    addEventback();
+    var orderId = 0;
+    var off = 0;
+    var sum = (getParam().sum == undefined ? '0' : getParam().sum);
+    // 初始化
+    $('.sum').text("￥" + (getParam().sum * 1).toFixed(2));
+    $('.deposit').text("含押金￥" + Number(getParam().deposit).toFixed(2) + '，退房时可返');
+    if (getData('hotelArr')) { //酒店订单
+        var obj = getData('hotelArr');
+    } else if (getData('shopArr')) { //商城订单
+        var obj = getData('shopArr');
+    }
+    if (getParam().type == 2) {
+        $('.sum').text("￥" + (Number(getParam().sum) + Number(getParam().deposit)).toFixed(2));
+        $('.deposit').text("含运费￥" + Number(getParam().deposit).toFixed(2));
+    }
+
+    // 充值
+    $('.main_btn').on('click', function () {
+        if (off) return false;
+        off = 1;
+        dlctipbox.loading();
+        var pay_type = $('input[name=pay]:checked').val();
+        if (pay_type == 1) { //余额支付
+            if (getParam().type == 2) { //微商城支付
+                console.log(obj)
+                dlc_request('appYuepay/shopOrder', {
+                    userId: user_token().USER_ID,
+                    roomId: obj.roomId,
+                    orderState: 0,
+                    orderInfo: obj,
+                    body: '商城订单',
+                    total: getParam().sum * 1 + getParam().deposit * 1,
+                    addressId: getParam().addressId
+                }, function (res) {
+                    console.log(res);
+                    off = 0;
+                    dlctipbox.clear();
+                    if (res.code == 1) {
+                        // dlctipbox.show(res.msg);
+                        dlctipbox.loading();
+                        clearData('shopArr');
+                        clearData('total');
+                        clearData('pay');
+                        setTimeout(() => {
+                            dlctipbox.clear();
+                            location.href = 'y_wshop.html';
+                        }, 2000);
+                    } else {
+                        dlctipbox.show(res.msg);
+                    }
+                })
+            } else { //酒店订单
+                var data = {
+                    userId: user_token().USER_ID,
+                    roomId: obj.roomId,
+                    orderState: 0,
+                    orderInRoomDate: obj.time,
+                    orderDay: obj.num,
+                    orderSubPrice: getParam().price*obj.num, //房间单价
+                    // orderSubPrice: getParam().sum,
+                    orderDepositPrice: getParam().deposit, 
+                    RENTTYPE_ID: obj.typeId,
+                    bedNumber: 0, //加床数量
+                    personNumber: 0,
+                    body: '酒店订单'
+                }
+                dlc_request('appYuepay/hotelOrder', data, function (res) {
+                    console.log(res)
+                    off = 0;
+                    dlctipbox.clear();
+                    if (res.code == 1) {
+                        // dlctipbox.show(res.msg);
+                        dlctipbox.loading();
+                        clearData('hotelArr');
+                        clearData('total');
+                        setTimeout(() => {
+                            dlctipbox.clear();
+                            location.href = 'o_hotelList.html'
+                        }, 2000);
+                    } else {
+                        dlctipbox.show(res.msg);
+                        off = false;
+                    }
+                })
+            }
+        } else if (pay_type == 2) { //微信支付
+            if (getParam().type == 2) { //微商城支付
+                dlc_request('appWebchatPay/shopOrderPay.html', {
+                    userId: user_token().USER_ID,
+                    orderState: 0,
+                    orderInfo: getData('shopArr'),
+                    body: '商城订单',
+                    openid: user_token().openid,
+                    total: getParam().sum * 1 + getParam().deposit * 1,
+                    addressId: getParam().addressId,
+                }, function (res) {
+                    console.log(res);
+                    off = 0;
+                    dlctipbox.clear();
+                    // alert(JSON.stringify(res))
+                    if (res.code == 1) {
+                        // dlctipbox.show(res.msg);
+                        jsApiParameters = res.data;
+                        orderId = res.orderId;
+                        callpay();
+                    } else {
+                        // alert(JSON.stringify(res));
+                        off = false;
+                    }
+                })
+            } else { //酒店支付
+                var param = {
+                    userId: user_token().USER_ID,
+                    roomId: obj.roomId,
+                    orderState: 0,
+                    orderInRoomDate: obj.time,
+                    orderDay: obj.num,
+                    body: '酒店订单',
+                    orderSubPrice: obj.money * obj.num,
+                    orderDepositPrice: obj.deposit,
+                    openid: user_token().openid,
+                    RENTTYPE_ID: obj.typeId,
+                    bedNumber: 0,
+                    addressId: getParam().addressId,
+                    personNumber: 0
+                }
+                // alert(JSON.stringify(param));
+                dlc_request('appWebchatPay/hotelOrderPay.html', param, function (res) {
+                    // alert(JSON.stringify(res))
+                    console.log(res);
+                    off = 0;
+                    dlctipbox.clear();
+                    // clearData('total');
+                    if (res.code == 1) {
+                        // alert(JSON.stringify(res.data))
+                        jsApiParameters = res.data;
+                        orderId = res.orderId;
+                        callpay();
+                    } else {
+                        // alert(JSON.stringify(res))
+                        dlctipbox.show(res.msg);
+                        off = false;
+                    }
+                })
+
+            }
+        }
+
+    })
+    var jsApiParameters = {};
+    var money = getUrlParam('money');
+
+    //调用微信JS api 支付
+
+    function jsApiCall() {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            jsApiParameters,
+            function (res) {
+                // alert(JSON.stringify(res));
+                if (res.err_msg == 'get_brand_wcpay_request:ok') {
+                    dlctipbox.show('支付成功');
+                    clearData('shopArr');
+                    clearData('hotelArr');
+                    clearData('total');
+                    clearData('pay');
+                    if (getUrlParam('type') == 3) {
+                        location.href = 'o_hotelList.html'
+                    } else {
+                        location.href = 'y_wshop.html'
+                    }
+                } else {
+                    // if (orderId != 0) {
+                    //     dlc_request('appHostel/delOrder', {
+                    //         orderId: orderId,
+                    //         type: "0"
+                    //     }, function (res) {
+                    //         if (res.code == 1) {
+                    //             dlctipbox.show('支付取消或失败');
+                    //         }
+                    //     })
+                    // } else {
+                    //     dlctipbox.show('支付取消或失败');
+                    // }
+                    var data = {
+                        orderId: orderId,
+                        type: "0"
+                    }
+                    if (getUrlParam('type') != 3) {
+                        data.type = 1
+                    }
+                    dlc_request('appHostel/delOrder',data , function (res) {
+                        if (res.code == 1) {
+                            dlctipbox.show('支付取消或失败');
+                        }
+                    })
+                    off = false;
+                }
+
+            }
+        );
+    }
+
+    function callpay() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        } else {
+            jsApiCall();
+        }
+    }
+</script>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        充值
+    </title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta content="webkit" name="renderer">
+    <meta content="no-siteapp" http-equiv="Cache-Control" />
+    <meta content="yes" name="mobile-web-app-capable" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no,email=no,address=no" name="format-detection" />
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <link href="../css/common.css" rel="stylesheet" />
+    <script src="../js/adaptive.js" type="text/javascript"></script>
+    <script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script>
+        window['adaptive'].desinWidth = 750;
+    window['adaptive'].baseFont = 28;
+    window['adaptive'].init();
+    </script>
+    <style type="text/css">
+        .t {
+            padding: 4% 3%;
+            color: #999;
+        }
+
+        ul {
+            width: 100%;
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        label {
+            width: 27%;
+            height: 1.2rem;
+            text-align: center;
+            margin: 0 3% 3%;
+        }
+
+        label span {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        input[type=radio]:checked+span {
+            background: linear-gradient(to right, #6c8eda, #4bc0ed);
+            color: #fff;
+            border: 1px solid #4bc0ed;
+        }
+
+        .main_btn {
+            margin-top: 1.4rem;
+        }
+
+        .inner_box {
+            width: 4.8rem;
+            height: 3rem;
+            background: #fff;
+            border-radius: .1rem;
+        }
+    </style>
+
+<body class="bw">
+    <p class="t">充值金额</p>
+    <ul>
+        <!-- <label>
+            <input type="radio" name="money" value="100" hidden />
+            <span>100元</span>
+        </label> -->
+    </ul>
+    <button class="main_btn">确认</button>
+    <div class="mask">
+        <div class="inner_box flex flex-column">
+            <img src="../img/y_success.png" style="width:1.3rem;height:1.3rem;" />
+            <p class="mt20">充值成功</p>
+        </div>
+    </div>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+<!--快速点击-->
+<script src="../js/dlc.js" type="text/javascript" charset="utf-8"></script>
+<!--公司的常用函数封装-->
+<script type="text/javascript">
+    var money = 0;
+    var donationAmount = 0;
+    $("ul").on('click', "label", function () {
+        money = $(this).children("input").val();
+        donationAmount = Number($(this).children("input").data("price"));
+    });
+    var off = 0;
+
+    init();
+
+    function init() {
+        dlc_request('appHostel/getYueRechargeMeal', {}, function (res) {
+            var str = "";
+            if (res.code == 0) {
+                res.rechargeMealList.forEach(item => {
+                    var title = item.DONATION_AMOUNT != 0 ? "充" + item.MEAL_AMOUNT + "送" + item.DONATION_AMOUNT :
+                        "充" + item.MEAL_AMOUNT;
+                    str +=
+                        '<label>' +
+                        '<input type="radio" name="money" data-price="'+ Number(Number(item.MEAL_AMOUNT) + Number(item.DONATION_AMOUNT)) +'" value="' + item.NEED_AMOUNT +
+                        '" hidden />' +
+                        '<span>' + title + '元</span>' +
+                        '</label>'
+                });
+                $("ul").html(str)
+            } else {
+                dlctipbox.show(res.msg);
+            }
+        })
+    }
+
+    $('.main_btn').click(function () { //提交
+        if (off) return false;
+        dlctipbox.loading();
+        off = 1;
+        if (money != 0) {
+            dlc_request('appWebchatPay/yueAddPay.html', {
+                userId: user_token().USER_ID,
+                orderState: 0,
+                orderDate: date('Y-m-d'),
+                body: '充值',
+                openid: user_token().openid,
+                orderPrice: money,
+                donationAmount: donationAmount
+            }, function (res) {
+                console.log(res);
+                dlctipbox.clear();
+                off = 0;
+                if (res.code == 1) {
+                    jsApiParameters = res.data;
+                    callpay();
+                } else {
+                    dlctipbox.show(res.msg);
+                }
+            })
+        } else {
+            dlctipbox.show('请先选中充值金额')
+        }
+    })
+    var jsApiParameters = {};
+
+    //调用微信JS api 支付
+    function jsApiCall() {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            jsApiParameters, //提交的支付信息
+            function (res) {
+                WeixinJSBridge.log(res.err_msg);
+                console.log(res)
+                WeixinJSBridge.log(res.err_msg);
+                if (res.err_msg === 'get_brand_wcpay_request:ok') {
+                    dlctipbox.show('支付成功');
+                    setTimeout(() => {
+                        history.go(-1)
+                    }, 1500);
+                } else {
+                    dlctipbox.show("支付失败 ")
+                }
+            }
+        );
+    }
+    //调用微信 支付
+    function callpay() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        } else {
+            jsApiCall();
+        }
+    }
+</script>
